@@ -276,6 +276,45 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 }
 .bc-selected-word:hover{background:#fee3d0}
 
+/* ===== Daily Quiz ===== */
+.dq-header{text-align:center;margin-bottom:24px}
+.dq-header h2{font-size:1.6rem;font-weight:800;letter-spacing:-.02em}
+.dq-header .dq-date{font-size:.85rem;color:var(--t3);margin-top:4px}
+.dq-apikey-wrap{
+  max-width:480px;margin:0 auto 20px;padding:14px 18px;
+  background:var(--surface);border:1px dashed var(--border);border-radius:var(--rads);
+  display:flex;gap:8px;align-items:center
+}
+.dq-apikey-wrap input{
+  flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;
+  font-size:.82rem;font-family:var(--font);outline:none
+}
+.dq-apikey-wrap input:focus{border-color:var(--brand)}
+.dq-apikey-wrap .hint{font-size:.7rem;color:var(--t3);margin-top:4px}
+.dq-loading{text-align:center;padding:40px 20px}
+.dq-loading .spinner{
+  width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--brand);
+  border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.dq-error{text-align:center;padding:32px 20px;color:var(--r)}
+.dq-error button{margin-top:12px}
+.dq-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--rad);
+  padding:20px;margin-bottom:16px;box-shadow:var(--shadow)
+}
+.dq-card .dqc-label{
+  display:inline-block;padding:3px 10px;border-radius:999px;font-size:.68rem;font-weight:700;
+  text-transform:uppercase;margin-bottom:10px
+}
+.dq-card .dqc-label.vocab{background:var(--bl);color:var(--b)}
+.dq-card .dqc-label.grammar{background:var(--brand-l);color:var(--brand)}
+.dq-card .dqc-label.reading{background:var(--pl);color:var(--p)}
+.dq-card .dqc-label.cloze{background:var(--gl);color:var(--g)}
+.dq-card ol{margin-left:20px;line-height:1.9;font-size:.9rem}
+.dq-card ol li{margin-bottom:4px}
+.dq-card .dqc-source{font-size:.72rem;color:var(--t3);margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+
 /* ===== Section visible/hidden ===== */
 .section{display:none}
 .section.active{display:block}
@@ -319,6 +358,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
   <button class="tab-btn" onclick="switchTab('cloze')" data-tab="cloze"><span class="tb-icon">✂️</span>完形</button>
   <button class="tab-btn" onclick="switchTab('trans')" data-tab="trans"><span class="tb-icon">🌐</span>翻译</button>
   <button class="tab-btn" onclick="switchTab('reading')" data-tab="reading"><span class="tb-icon">📰</span>阅读</button>
+<button class="tab-btn" onclick="switchTab('daily')" data-tab="daily"><span class="tb-icon">🔥</span>今日题库</button>
 </div></nav>
 
 <div class="main-wrap" id="mainWrap"></div>
@@ -369,6 +409,7 @@ function render(){
     case 'cloze':renderCloze();break
     case 'trans':renderTrans();break
     case 'reading':renderReading();break
+    case 'daily':renderDaily();break
   }
 }
 window.onload=render
@@ -999,6 +1040,171 @@ function bcReset(sk,bi){
     case 'cloze':renderCloze();break
     case 'trans':renderTrans();break
     case 'reading':renderReading();break
+  }
+}
+
+// ===== DAILY QUIZ (AI 每日题库) =====
+const DQ_STORE='eng_daily_quiz';
+const AI_API='https://api.deepseek.com/v1/chat/completions';
+const AI_MODEL='deepseek-chat';
+
+function dqGetCache(){
+  try{const d=JSON.parse(localStorage.getItem(DQ_STORE));if(d&&d.date===dqToday())return d.data;return null}catch{return null}
+}
+function dqSetCache(data){localStorage.setItem(DQ_STORE,JSON.stringify({date:dqToday(),data}))}
+function dqToday(){return new Date().toISOString().split('T')[0]}
+function dqGetKey(){return localStorage.getItem('eng_dq_apikey')||''}
+
+function renderDaily(){
+  const cached=dqGetCache();
+  let h=`<div class="dq-header"><h2>🔥 今日题库</h2><div class="dq-date">${dqToday()} · AI 为你生成专属练习题</div></div>`;
+
+  if(!dqGetKey()){
+    h+=`<div class="dq-apikey-wrap"><div style="flex:1"><input type="password" id="dqKeyInput" placeholder="粘贴 DeepSeek API Key..."><div class="hint">在 <a href="https://platform.deepseek.com" target="_blank">platform.deepseek.com</a> 免费注册获取</div></div><button class="btn btn-primary btn-sm" onclick="dqSaveKey()">保存</button></div>`;
+    if(cached){h+=dqRenderContent(cached)}
+    else{h+=`<div style="text-align:center;padding:40px;color:var(--t3)">💡 首次使用需要配置 API Key，每天生成一套新题</div>`}
+  } else {
+    h+=`<div style="text-align:center;margin-bottom:16px;font-size:.78rem;color:var(--t3)"><span>🔑 DeepSeek API · </span><a href="#" onclick="dqRemoveKey()" style="color:var(--r)">更换</a>${cached?`<span style="margin-left:12px">✅ 今日已生成 · </span><a href="#" onclick="dqRegen()" style="color:var(--brand)">重新生成</a>`:''}</div>`;
+    if(cached){h+=dqRenderContent(cached)}
+    else{h+=dqLoading();setTimeout(dqGenerate,300)}
+  }
+  document.getElementById('mainWrap').innerHTML=h;
+}
+
+function dqLoading(){
+  return `<div class="dq-loading"><div class="spinner"></div><p style="color:var(--t3)">AI 正在为你生成今日题库...</p><p style="font-size:.75rem;color:var(--t3)">大约需要 5-10 秒</p></div>`;
+}
+
+function dqSaveKey(){
+  const k=document.getElementById('dqKeyInput').value.trim();
+  if(!k)return;localStorage.setItem('eng_dq_apikey',k);
+  dqSetCache(null);renderDaily();
+}
+
+function dqRemoveKey(){localStorage.removeItem('eng_dq_apikey');dqSetCache(null);renderDaily()}
+
+function dqRegen(){dqSetCache(null);renderDaily()}
+
+async function dqGenerate(){
+  const key=dqGetKey();if(!key)return;
+  const today=dqToday();
+  try{
+    const resp=await fetch(AI_API,{
+      method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
+      body:JSON.stringify({model:AI_MODEL,temperature:0.8,max_tokens:3000,
+        messages:[{role:'system',content:`你是考研英语出题专家。请生成一套${today}的考研英语练习题。严格按照以下JSON格式输出，不要输出其他内容：`+JSON.stringify(dqPromptTemplate())}]})});
+    if(!resp.ok){const e=await resp.json().catch(()=>({}));throw new Error(e.error?.message||`API错误(${resp.status})`)}
+    const data=await resp.json();
+    const content=data.choices[0].message.content;
+    const json=JSON.parse(content.replace(/```json\n?/g,'').replace(/```\n?/g,'').trim());
+    dqSetCache(json);renderDaily();
+  }catch(e){
+    document.getElementById('mainWrap').innerHTML=
+      `<div class="dq-header"><h2>🔥 今日题库</h2></div>`+
+      `<div class="dq-error"><p>生成失败：${e.message}</p><p style="font-size:.8rem;color:var(--t3)">检查 API Key 是否正确，或网络是否连通</p><button class="btn btn-primary btn-sm" onclick="renderDaily()">🔄 重试</button><button class="btn btn-ghost btn-sm" onclick="dqRemoveKey()">更换 Key</button></div>`;
+  }
+}
+
+function dqPromptTemplate(){
+  return {
+    vocabQuiz:{title:'词汇测验',type:'vocab',items:[
+      {q:'一个英文单词',opts:['正确中文','干扰1','干扰2','干扰3'],answer:0,explain:'简短解析(10字内)'}
+    ]},
+    grammarQuiz:{title:'语法选择',type:'grammar',items:[
+      {q:'题干，用___标出空格',opts:['A','B','C','D'],answer:0,explain:'解析'}
+    ]},
+    clozePassage:{title:'短文填空',type:'cloze',passage:'一段80-120词的短文，用(1)(2)标出5个空',blanks:[{word:'正确答案',explain:'为什么'}]},
+    readingPassage:{title:'今日阅读',type:'reading',passage:'一段120-180词的学术短文',items:[
+      {q:'问题',opts:['A','B','C','D'],answer:0,explain:'定位原文'}
+    ]}
+  };
+}
+
+function dqRenderContent(d){
+  let h='';
+  // Vocab quiz
+  if(d.vocabQuiz&&d.vocabQuiz.items){
+    h+=`<div class="dq-card"><span class="dqc-label vocab">📝 ${d.vocabQuiz.title}</span>`;
+    h+=`<div id="dqVocabQuestions"></div></div>`;
+  }
+  // Grammar quiz
+  if(d.grammarQuiz&&d.grammarQuiz.items){
+    h+=`<div class="dq-card"><span class="dqc-label grammar">📖 ${d.grammarQuiz.title}</span>`;
+    h+=`<div id="dqGrammarQuestions"></div></div>`;
+  }
+  // Cloze passage
+  if(d.clozePassage&&d.clozePassage.passage){
+    h+=`<div class="dq-card"><span class="dqc-label cloze">✂️ ${d.clozePassage.title}</span>`;
+    h+=`<p style="line-height:2.2;font-size:.9rem">${d.clozePassage.passage}</p>`;
+    if(d.clozePassage.blanks){
+      h+=`<div style="margin-top:12px">`;
+      d.clozePassage.blanks.forEach((bl,i)=>{
+        h+=`<details style="margin-bottom:6px"><summary style="cursor:pointer;color:var(--brand);font-weight:600">空 ${i+1}</summary><span style="font-size:.85rem"><b>答案：${bl.word}</b> · ${bl.explain||''}</span></details>`;
+      });
+      h+=`</div>`;
+    }
+    h+=`</div>`;
+  }
+  // Reading
+  if(d.readingPassage&&d.readingPassage.passage){
+    h+=`<div class="dq-card"><span class="dqc-label reading">📰 ${d.readingPassage.title}</span>`;
+    h+=`<p style="line-height:1.9;font-size:.9rem;margin-bottom:14px">${d.readingPassage.passage}</p>`;
+    if(d.readingPassage.items){
+      h+=`<div id="dqReadingQuestions"></div>`;
+    }
+    h+=`</div>`;
+  }
+  // Source
+  h+=`<div class="dqc-source">🤖 AI 生成于 ${dqToday()} · 内容仅供参考学习</div>`;
+  h+=`<div style="text-align:center;margin-top:16px"><button class="btn btn-primary" onclick="dqRegen()">🔄 换一套题</button></div>`;
+
+  // Render interactive questions
+  setTimeout(()=>{
+    if(d.vocabQuiz&&d.vocabQuiz.items)dqRenderQuestions('dqVocabQuestions',d.vocabQuiz.items,'vocab');
+    if(d.grammarQuiz&&d.grammarQuiz.items)dqRenderQuestions('dqGrammarQuestions',d.grammarQuiz.items,'grammar');
+    if(d.readingPassage&&d.readingPassage.items)dqRenderQuestions('dqReadingQuestions',d.readingPassage.items,'reading');
+  },80);
+
+  return h;
+}
+
+function dqRenderQuestions(containerId,items,prefix){
+  const el=document.getElementById(containerId);if(!el)return;
+  const letters=['A','B','C','D'];
+  items.forEach((item,i)=>{
+    const stateKey=`dq_ans_${prefix}_${i}`;
+    const done=localStorage.getItem(stateKey);
+    let h=`<div style="margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border)">`;
+    h+=`<div style="font-weight:550;margin-bottom:8px">${i+1}. ${item.q||item.question||''}</div>`;
+    if(item.opts||item.options){
+      const opts=item.opts||item.options;
+      h+=`<div style="display:flex;flex-wrap:wrap;gap:6px">`;
+      opts.forEach((o,j)=>{
+        const sel=(done!==null&&parseInt(done)===j);
+        const isCorrect=j===item.answer;
+        let cls='btn btn-sm ';const style='';
+        if(done!==null){
+          if(isCorrect)cls+='opt correct';else if(sel)cls+='opt wrong';else cls+='btn-ghost';
+        }else{cls+='btn-ghost'}
+        h+=`<button class="${cls}" style="font-size:.8rem;font-family:var(--font)" ${done!==null?'disabled':''} onclick="dqAnswer('${stateKey}',${j},${item.answer},this)">${letters[j]}. ${o}</button>`;
+      });
+      h+=`</div>`;
+      if(done!==null){
+        h+=`<div style="margin-top:4px;font-size:.78rem;color:${parseInt(done)===item.answer?'var(--g)':'var(--r)'}">${parseInt(done)===item.answer?'✓ 正确':'✗ 正确答案：'+letters[item.answer]+'. '+opts[item.answer]} · ${item.explain||item.exp||''}</div>`;
+      }
+    }
+    h+=`</div>`;
+    el.innerHTML+=h;
+  });
+}
+
+function dqAnswer(stateKey,chosen,correct,btn){
+  localStorage.setItem(stateKey,chosen.toString());
+  // Re-render the questions
+  const d=dqGetCache();
+  if(d){
+    const h=document.getElementById('mainWrap').innerHTML;
+    document.getElementById('mainWrap').innerHTML=dqRenderContent(d);
   }
 }
 
