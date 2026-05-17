@@ -237,6 +237,45 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 }
 .toast.good{background:var(--g)} .toast.bad{background:var(--r)}
 
+/* ===== Banked Cloze ===== */
+.bc-section{margin-top:32px;border-top:2px solid var(--border);padding-top:24px}
+.bc-section h3{font-size:1rem;font-weight:750;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.bc-section .bc-sub{font-size:.8rem;color:var(--t3);margin-bottom:16px}
+.bc-wordbank{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--rads)}
+.bc-wordbank .wb-word{
+  padding:6px 14px;border:1.5px solid var(--border);border-radius:999px;
+  font-size:.84rem;font-weight:600;cursor:pointer;transition:all .15s;
+  background:var(--surface);font-family:var(--font)
+}
+.bc-wordbank .wb-word:hover{border-color:var(--brand);color:var(--brand);background:var(--brand-l)}
+.bc-wordbank .wb-word.used{opacity:.3;pointer-events:none;text-decoration:line-through}
+.bc-passage{font-size:.92rem;line-height:2.4;margin-bottom:16px;padding:16px 18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--rads)}
+.bc-passage .bc-blank{
+  display:inline-block;min-width:70px;padding:2px 10px;margin:0 3px;
+  border-bottom:2.5px dashed var(--brand);color:var(--brand);font-weight:650;
+  cursor:pointer;text-align:center;transition:all .15s
+}
+.bc-passage .bc-blank:hover{background:var(--brand-l)}
+.bc-passage .bc-blank.filled{border-bottom-style:solid}
+.bc-passage .bc-blank.correct{border-color:var(--g);color:var(--g);background:var(--gl)}
+.bc-passage .bc-blank.wrong{border-color:var(--r);color:var(--r);background:var(--rl)}
+.bc-submit{margin-bottom:16px}
+.bc-explain{margin-top:16px;display:none}
+.bc-explain.show{display:block}
+.bc-explain-item{
+  padding:10px 14px;margin-bottom:6px;background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radx);font-size:.84rem;line-height:1.7
+}
+.bc-explain-item .bci-num{font-weight:750;margin-right:4px}
+.bc-explain-item.correct{border-left:3px solid var(--g);background:var(--gl)}
+.bc-explain-item.wrong{border-left:3px solid var(--r);background:var(--rl)}
+.bc-selected-word{
+  display:inline-block;padding:4px 12px;margin:2px 4px;
+  background:var(--brand-l);border:1.5px solid var(--brand);border-radius:999px;
+  font-size:.82rem;font-weight:600;color:var(--brand);cursor:pointer
+}
+.bc-selected-word:hover{background:#fee3d0}
+
 /* ===== Section visible/hidden ===== */
 .section{display:none}
 .section.active{display:block}
@@ -385,8 +424,10 @@ function renderGrammar(){
   // main
   h+=`<div style="flex:1;min-width:0">`;
   if(!glid){h+=grWelcome()}else{h+=grLesson()}
+  if(glid){h+=renderBankedCloze('grammar')}
   h+=`</div></div>`;
   document.getElementById('mainWrap').innerHTML=h;
+  setTimeout(bcBindWordBank,80);
   // ring
   const pct=Math.round(done/20*100);
   document.getElementById('gPct').textContent=pct+'%';
@@ -555,7 +596,9 @@ function renderVocab(){
       h+=`<div style="margin-top:10px;display:flex;gap:8px;justify-content:space-between"><span style="font-size:.78rem;color:var(--t3)">${vidx+1}/${vs.words.length}</span><button class="btn btn-ghost btn-sm" onclick="vquizMode=false;renderVocab()">退出测验</button></div>`;
     }
   }
+  h+=renderBankedCloze('vocab');
   document.getElementById('mainWrap').innerHTML=h;
+  setTimeout(bcBindWordBank,80);
   // reset flashcard
   const fc=document.getElementById('fCard');if(fc)fc.classList.remove('flipped');
 }
@@ -590,7 +633,9 @@ function renderLongSent(){
       <div class="ls-analysis">${ls.ana}</div>
     </div>`;
   });
+  h+=renderBankedCloze('longsent');
   document.getElementById('mainWrap').innerHTML=h;
+  setTimeout(bcBindWordBank,80);
 }
 
 // ==================== CLOZE ====================
@@ -629,7 +674,8 @@ function renderCloze(){
     const correct=czans.filter(a=>a.correct).length;
     const total=cp.qs.length;
     h+=`<div class="result"><div class="card"><div class="ri">${correct===total?'🎉':'📖'}</div><div class="rs ${correct===total?'p':correct>=total*0.8?'g':correct>=total*0.6?'o':'l'}">${correct}/${total}</div><div class="rm">${correct===total?'全对！':'注意上下文逻辑线索'}</div><div class="ra"><button class="btn btn-ghost" onclick="czans=[];renderCloze()">🔄 重做</button>${czidx<CLOZE_PASSAGES.length-1?`<button class="btn btn-primary" onclick="czidx++;czans=[];renderCloze()">下一篇 →</button>`:''}</div></div></div>`;
-    document.getElementById('mainWrap').innerHTML=h;return;
+    h+=renderBankedCloze('cloze');
+    document.getElementById('mainWrap').innerHTML=h;setTimeout(bcBindWordBank,80);return;
   }
   h+=`<div class="card"><h3>${cp.title}</h3><p style="font-size:.95rem;line-height:2.3">`;
   let blankCount=0;
@@ -653,7 +699,9 @@ function renderCloze(){
     }
   });
   h+=`</p><div style="margin-top:14px;font-size:.8rem;color:var(--t3)">已填 ${czans.length}/${allBlanks.length} · 选完最后一空自动出分</div></div>`;
+  h+=renderBankedCloze('cloze');
   document.getElementById('mainWrap').innerHTML=h;
+  setTimeout(bcBindWordBank,80);
 }
 
 function czAns(qi,val){
@@ -686,7 +734,9 @@ function renderTrans(){
   h+=`<div style="margin-top:10px;display:flex;gap:8px"><button class="btn btn-primary btn-sm" onclick="document.getElementById('transRef').classList.toggle('show')">📖 对照参考译文</button></div>`;
   h+=`<div class="trans-ref" id="transRef"><strong>参考译文：</strong>${ts.ref}<br><br><strong>语法解析：</strong>${ts.note}</div>`;
   h+=`<div style="display:flex;gap:8px;margin-top:14px;justify-content:space-between"><button class="btn btn-ghost btn-sm" onclick="tridx=Math.max(0,tridx-1);renderTrans()" ${tridx===0?'disabled':''}>← 上一句</button><button class="btn btn-primary btn-sm" onclick="tridx=Math.min(TRANS_SENTS.length-1,tridx+1);renderTrans()" ${tridx===TRANS_SENTS.length-1?'disabled':''}>下一句 →</button></div>`;
+  h+=renderBankedCloze('trans');
   document.getElementById('mainWrap').innerHTML=h;
+  setTimeout(bcBindWordBank,80);
 }
 
 // ==================== READING ====================
@@ -727,13 +777,229 @@ function renderReading(){
     h+=`<div class="q-card"><div class="qtx">${q.q}</div><div class="opts">${q.op.map((o,i)=>`<button class="opt" onclick="readAns(${i},${q.a})"><span class="lt">${['A','B','C','D'][i]}</span>${o}</button>`).join('')}</div><div class="fb-toast" id="rdFb"></div></div>`;
     h+=`<button class="btn btn-ghost btn-sm" style="margin-top:10px" onclick="rdans=[];renderReading()">重新开始</button></div>`;
   }
+  h+=renderBankedCloze('reading');
   document.getElementById('mainWrap').innerHTML=h;
+  setTimeout(bcBindWordBank,80);
 }
 function readAns(idx,correct){
   const ok=idx===correct;rdans.push({correct:ok});
   document.querySelectorAll('.opts .opt').forEach((b,i)=>{b.disabled=true;if(i===correct)b.classList.add('correct');if(i===idx&&!ok)b.classList.add('wrong')});
   const fb=document.getElementById('rdFb');if(fb){fb.className='fb-toast show '+(ok?'ok':'no');fb.textContent=ok?'✓ 正确！':'✗ 正确答案：'+READINGS[rdidx].qs[rdans.length-1].op[correct]}
   setTimeout(()=>renderReading(),1000)
+}
+
+// ===== BANKED CLOZE (选词填空) =====
+const BANKED_CLOZES={
+grammar:[
+{title:'短文填空 · 冠词与介词',passage:'Learning (1)___ second language is (2)___ challenging but rewarding journey. Many people start learning English (3)___ a young age, but only (4)___ few persist long enough to achieve fluency. The key lies not (5)___ talent but in consistent practice. Those who spend (6)___ hour a day practicing tend to make (7)___ most progress.',
+wordBank:['a','an','the','in','at','on','of','for','by','with'],
+blanks:[
+  {pos:0,answer:0,explain:'泛指"一门第二语言"，second以辅音音素开头，用<b>a</b>。'},
+  {pos:1,answer:0,explain:'journey是可数名词单数，泛指"一段旅程"，用<b>a</b>。'},
+  {pos:2,answer:1,explain:'"at a young age"是固定搭配，表示"在小时候"。'},
+  {pos:3,answer:0,explain:'"only a few"是固定搭配，few前加a表示"一些"。'},
+  {pos:4,answer:3,explain:'"lie in"是固定搭配，表示"在于"。'},
+  {pos:5,answer:1,explain:'hour以元音音素开头(our)，用<b>an</b>。这是易错点——不是看字母h，而是看发音。'},
+  {pos:6,answer:2,explain:'"make the most progress"是固定搭配，最高级前用<b>the</b>。'},
+]},
+{title:'短文填空 · 时态与语态',passage:'Climate change (1)___ widely discussed in recent years. Scientists (2)___ warning about its effects since the 1980s. While some progress (3)___ made, much more needs to (4)___ done. If we (5)___ act now, the consequences (6)___ be severe. It is crucial that immediate action (7)___ taken.',
+wordBank:['has been','have been','has','is','be','will','would','taken','do not','be taken'],
+blanks:[
+  {pos:0,answer:0,explain:'现在完成时被动：气候变化"已经被讨论"。主语单数用<b>has been</b>。'},
+  {pos:1,answer:1,explain:'现在完成进行时：科学家从80年代至今一直在警告。since是标志词，主语复数用<b>have been</b>。'},
+  {pos:2,answer:0,explain:'现在完成时被动：progress不可数，用<b>has been</b> made。'},
+  {pos:3,answer:3,explain:'情态动词被动：needs to <b>be</b> done，to后接原形。'},
+  {pos:4,answer:4,explain:'第一条件句(真实将来)：if从句用一般现在时，主句用will。否定用<b>do not</b>。'},
+  {pos:5,answer:5,explain:'第一条件句主句：<b>will</b> + 原形。'},
+  {pos:6,answer:3,explain:'虚拟语气：It is crucial that...后用(should)+原形。被动：action <b>be taken</b>。'},
+]},
+],
+vocab:[
+{title:'短文填空 · 学术词汇',passage:'The study (1)___ the relationship between social media use and academic performance. Researchers (2)___ data from over 1,000 students and found a significant correlation. The results (3)___ that excessive use of social platforms could (4)___ students\' ability to concentrate. However, the authors (5)___ that moderate use might actually have some benefits.',
+wordBank:['examined','investigate','indicate','impair','acknowledged','display','acquired','assessed','demonstrate','emphasized'],
+blanks:[
+  {pos:0,answer:0,explain:'主语是study(单数)，过去时用<b>examined</b>，意为"研究/考察"。'},
+  {pos:1,answer:7,explain:'"collected/assessed data"搭配，"评估数据"。researchers用过去时<b>assessed</b>。'},
+  {pos:2,answer:2,explain:'results用现在时或过去时均可，<b>indicate</b>/indicated表示"表明"。'},
+  {pos:3,answer:3,explain:'"impair ability"是学术搭配，意为"削弱能力"。could后接原形<b>impair</b>。'},
+  {pos:4,answer:4,explain:'however表转折，authors过去时<b>acknowledged</b>，意为"承认"。'},
+]},
+],
+longsent:[
+{title:'短文填空 · 连接词与逻辑',passage:'(1)___ the internet has brought many benefits, it has also created new problems. (2)___ example, while remote work offers flexibility, it can (3)___ lead to social isolation. (4)___, the constant flow of information makes it difficult to focus. (5)___ these challenges, digital technology remains an essential part of modern life.',
+wordBank:['Although','Despite','For','also','therefore','Moreover','However','Nevertheless','but','Since'],
+blanks:[
+  {pos:0,answer:0,explain:'句首让步状语从句，表示"虽然"，用<b>Although</b>。'},
+  {pos:1,answer:2,explain:'"For example"固定搭配，表示"例如"。'},
+  {pos:2,answer:3,explain:'句中表示"也"，用<b>also</b>。too放句末，as well放句末。'},
+  {pos:3,answer:5,explain:'递进关系，表示"此外/而且"，用<b>Moreover</b>。'},
+  {pos:4,answer:1,explain:'"Despite these challenges"表示"尽管有这些挑战"，介词短语作让步状语。Although是连词需接句子。'},
+]},
+],
+cloze:[
+{title:'短文填空 · 科研方法',passage:'To (1)___ the effectiveness of the new teaching method, the researchers (2)___ an experiment involving 200 students. The participants were (3)___ into two groups: one using the traditional approach and the other using the new method. After six months, both groups took the same test, and the results were carefully (4)___. The new method (5)___ to be significantly more effective.',
+wordBank:['test','conducted','divided','analyzed','proved','prove','separated','examined','investigation','confirm'],
+blanks:[
+  {pos:0,answer:0,explain:'不定式表目的，"为了测试"。To后接原形<b>test</b>。'},
+  {pos:1,answer:1,explain:'过去时，"进行实验"用<b>conducted</b> an experiment。'},
+  {pos:2,answer:2,explain:'被动语态，"被分成两组"。be <b>divided</b> into是固定搭配。'},
+  {pos:3,answer:3,explain:'被动，"被仔细分析"。results were <b>analyzed</b>。'},
+  {pos:4,answer:4,explain:'过去时，"被证明更有效"。<b>proved</b> to be是常用表达。'},
+]},
+],
+trans:[
+{title:'短文填空 · 词形变化',passage:'The rapid (1)___ of cities has brought both opportunities and challenges. Urban planners must find (2)___ solutions to housing shortages and traffic (3)___. The key is to balance economic (4)___ with environmental (5)___. This requires not only technical expertise but also political will.',
+wordBank:['growth','growing','innovative','innovation','congestion','congested','development','develop','sustainability','sustainable'],
+blanks:[
+  {pos:0,answer:0,explain:'形容词rapid修饰名词，用<b>growth</b>。rapid growth of cities=城市的快速发展。'},
+  {pos:1,answer:2,explain:'修饰名词solutions用形容词<b>innovative</b>(创新的)。区分：innovation是名词。'},
+  {pos:2,answer:4,explain:'traffic <b>congestion</b>(交通拥堵)是固定搭配，两个名词组合。'},
+  {pos:3,answer:6,explain:'economic <b>development</b>(经济发展)，名词修饰名词。'},
+  {pos:4,answer:8,explain:'environmental <b>sustainability</b>(环境可持续性)，形容词+名词。'},
+]},
+],
+reading:[
+{title:'短文填空 · 科技与社会',passage:'Artificial intelligence is (1)___ the way we live and work at an unprecedented pace. While some fear that AI will (2)___ human workers, others believe it will (3)___ new opportunities. What is certain is that the workforce must (4)___ to these changes through continuous learning. Governments and businesses need to work together to (5)___ that the benefits of AI are widely shared.',
+wordBank:['transforming','replace','create','adapt','ensure','changing','removing','generating','adjust','guarantee'],
+blanks:[
+  {pos:0,answer:0,explain:'现在进行时，"正在改变"。用<b>transforming</b>强调深刻变革。changing也可但不如此处精确。'},
+  {pos:1,answer:1,explain:'"取代人类工人"，will后接原形<b>replace</b>。remove是"移除"不如此处贴切。'},
+  {pos:2,answer:2,explain:'"创造新机会"，will后接原形<b>create</b>。generating也可但create更直接。'},
+  {pos:3,answer:3,explain:'"适应变化"，<b>adapt</b> to是固定搭配。adjust也可接to但adapt更常用于大环境变化。'},
+  {pos:4,answer:4,explain:'"确保"，<b>ensure</b> that...。guarantee过于绝对，ensure更恰当。'},
+]},
+],
+};
+
+let bcAnswers=[]; // {blankIndex, wordIndex}
+
+function renderBankedCloze(sectionKey){
+  const list=BANKED_CLOZES[sectionKey];if(!list||!list.length)return '';
+  let h=``;
+  list.forEach((bc,bcIdx)=>{
+    const stateKey=`bc_${sectionKey}_${bcIdx}`;
+    let bcState=prog[stateKey]||{done:false,ans:[],score:0};
+    h+=`<div class="bc-section"><h3>📋 ${bc.title}</h3><div class="bc-sub">选词填空 · ${bc.blanks.length}个空 · ${bc.wordBank.length}个候选词（有2-3个干扰项）</div>`;
+    // Word bank
+    h+=`<div class="bc-wordbank" id="wbank_${sectionKey}_${bcIdx}">`;
+    bc.wordBank.forEach((w,i)=>{
+      const used=bcState.ans&&bcState.ans.some(a=>a.wordIdx===i);
+      h+=`<span class="wb-word${used?' used':''}" data-widx="${i}" data-section="${sectionKey}" data-bc="${bcIdx}">${w}</span>`;
+    });
+    h+=`</div>`;
+    // Passage with selectable blanks
+    h+=`<div class="bc-passage" id="bcpass_${sectionKey}_${bcIdx}">`;
+    let blankIdx=0;
+    const parts=bc.passage.split(/\((\d+)\)/);
+    // Actually parse the numbered blanks
+    let txt='';let inBlank=false;
+    for(let i=0;i<bc.passage.length;i++){
+      const ch=bc.passage[i];
+      if(ch==='('&&bc.passage[i+1]&&/\d/.test(bc.passage[i+1])){
+        if(txt){h+=txt;txt=''}
+        inBlank=true;continue
+      }
+      if(inBlank&&ch===')'){
+        const bi=blankIdx++;
+        const filled=bcState.ans&&bcState.ans[bi]!==undefined;
+        const isCorrect=bcState.done&&bcState.ans[bi]!==undefined&&bcState.ans[bi].wordIdx===bc.blanks[bi].answer;
+        let word='___';
+        if(filled){const wi=bcState.ans[bi].wordIdx;word=bc.wordBank[wi]}
+        const cls=filled?(bcState.done?(isCorrect?'correct':'wrong'):'filled'):'';
+        h+=`<span class="bc-blank ${cls}" id="bk_${sectionKey}_${bcIdx}_${bi}" onclick="bcSelectBlank('${sectionKey}',${bcIdx},${bi})" data-bi="${bi}">${word}</span>`;
+        inBlank=false;continue
+      }
+      if(!inBlank)txt+=ch
+    }
+    if(txt)h+=txt;
+    h+=`</div>`;
+    // Buttons
+    if(!bcState.done){
+      h+=`<div class="bc-submit"><button class="btn btn-primary btn-sm" onclick="bcCheck('${sectionKey}',${bcIdx})">✅ 提交答案</button> <button class="btn btn-ghost btn-sm" onclick="bcReset('${sectionKey}',${bcIdx})">🔄 重置</button></div>`;
+    } else {
+      h+=`<div class="bc-submit"><span style="color:var(--g);font-weight:700">得分：${bcState.score}/${bc.blanks.length}</span> <button class="btn btn-ghost btn-sm" onclick="bcReset('${sectionKey}',${bcIdx})">🔄 重做</button></div>`;
+      // Explanations
+      h+=`<div class="bc-explain show">`;
+      bc.blanks.forEach((bl,i)=>{
+        const filled=bcState.ans&&bcState.ans[i]!==undefined;
+        const isCorrect=filled&&bcState.ans[i].wordIdx===bl.answer;
+        const userWord=filled?bc.wordBank[bcState.ans[i].wordIdx]:'未填';
+        h+=`<div class="bc-explain-item ${isCorrect?'correct':'wrong'}"><span class="bci-num">${i+1}.</span> 你选：<b>${userWord}</b> ${isCorrect?'✓':'→ 正确答案：<b>'+bc.wordBank[bl.answer]+'</b>'}<br><span style="color:var(--t2);font-size:.8rem">${bl.explain}</span></div>`;
+      });
+      h+=`</div>`;
+    }
+    h+=`</div>`;
+  });
+  return h;
+}
+
+let bcSelectedWord=null; // {wordIdx, sectionKey, bcIdx}
+
+// Attach word bank click handlers after render
+function bcBindWordBank(){
+  document.querySelectorAll('.bc-wordbank .wb-word:not(.used)').forEach(el=>{
+    el.onclick=function(){
+      const widx=parseInt(this.dataset.widx);
+      const sk=this.dataset.section;const bi=parseInt(this.dataset.bc);
+      bcSelectedWord={wordIdx:widx,sectionKey:sk,bcIdx:bi};
+      // Highlight
+      document.querySelectorAll('.bc-wordbank .wb-word').forEach(w=>w.style.outline='none');
+      this.style.outline='2px solid var(--brand)';this.style.outlineOffset='2px';
+    }
+  });
+}
+
+function bcSelectBlank(sk,bi,blankIdx){
+  if(!bcSelectedWord||bcSelectedWord.sectionKey!==sk||bcSelectedWord.bcIdx!==bi)return;
+  const stateKey=`bc_${sk}_${bi}`;
+  let st=prog[stateKey]||{done:false,ans:[],score:0};
+  if(st.done)return;
+  // Update answer
+  while(st.ans.length<=blankIdx)st.ans.push(undefined);
+  st.ans[blankIdx]={wordIdx:bcSelectedWord.wordIdx};
+  prog[stateKey]=st;save();
+  bcSelectedWord=null;
+  // Re-render the section
+  switch(sk){
+    case 'grammar':renderGrammar();break
+    case 'vocab':renderVocab();break
+    case 'longsent':renderLongSent();break
+    case 'cloze':renderCloze();break
+    case 'trans':renderTrans();break
+    case 'reading':renderReading();break
+  }
+}
+
+function bcCheck(sk,bi){
+  const stateKey=`bc_${sk}_${bi}`;
+  let st=prog[stateKey]||{done:false,ans:[],score:0};
+  const bc=BANKED_CLOZES[sk][bi];
+  let score=0;
+  bc.blanks.forEach((bl,i)=>{if(st.ans[i]&&st.ans[i].wordIdx===bl.answer)score++});
+  st.done=true;st.score=score;
+  prog[stateKey]=st;save();
+  // Re-render
+  switch(sk){
+    case 'grammar':renderGrammar();break
+    case 'vocab':renderVocab();break
+    case 'longsent':renderLongSent();break
+    case 'cloze':renderCloze();break
+    case 'trans':renderTrans();break
+    case 'reading':renderReading();break
+  }
+}
+
+function bcReset(sk,bi){
+  const stateKey=`bc_${sk}_${bi}`;
+  prog[stateKey]={done:false,ans:[],score:0};save();
+  switch(sk){
+    case 'grammar':renderGrammar();break
+    case 'vocab':renderVocab();break
+    case 'longsent':renderLongSent();break
+    case 'cloze':renderCloze();break
+    case 'trans':renderTrans();break
+    case 'reading':renderReading();break
+  }
 }
 
 // ===== EXPORT/IMPORT =====
