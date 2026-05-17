@@ -429,6 +429,7 @@ let getStored = () => { try { return JSON.parse(localStorage.getItem(STORAGE_KEY
 let setStored = (o) => localStorage.setItem(STORAGE_KEY, JSON.stringify(o));
 let progress = getStored();
 let curLessonId = null;
+let lessonPhase = 'learn'; // 'learn' | 'quiz'
 let curQIdx = 0;
 let curAnswers = [];
 let streakCount = parseInt(localStorage.getItem('grammar_v2_streak') || '0');
@@ -505,11 +506,14 @@ function shootConfetti() {
 
 // ===== RENDER =====
 function openLesson(id) {
-  curLessonId = id; curQIdx = 0; curAnswers = [];
+  curLessonId = id; lessonPhase = 'learn'; curQIdx = 0; curAnswers = [];
   refreshSidebar(); renderLesson();
   document.getElementById('mainContent').scrollTop = 0;
   window.scrollTo({top:0,behavior:'smooth'});
 }
+
+function startQuiz() { lessonPhase = 'quiz'; curQIdx = 0; curAnswers = []; renderLesson(); }
+function backToLearn() { lessonPhase = 'learn'; renderLesson(); }
 
 function renderLesson() {
   const lsn = LESSONS.find(l => l.id === curLessonId);
@@ -523,55 +527,88 @@ function renderLesson() {
   h += `<h2>${lsn.title}</h2><div class="en">${lsn.enTitle}</div>`;
   h += `</div>`;
 
-  // Topic chips
-  h += `<div class="topic-icon-row">`;
-  (TOPIC_TAGS[lsn.id]||[]).forEach(t=>{ h+=`<span class="topic-chip">📌 ${t}</span>`; });
-  h += `</div>`;
+  if (lessonPhase === 'learn') {
+    // ====== LEARN MODE ======
+    // Topic chips
+    h += `<div class="topic-icon-row">`;
+    (TOPIC_TAGS[lsn.id]||[]).forEach(t=>{ h+=`<span class="topic-chip">📌 ${t}</span>`; });
+    h += `</div>`;
 
-  if (curQIdx >= lsn.questions.length) {
-    // Result
-    const correct = curAnswers.filter(a=>a.correct).length;
-    const total = lsn.questions.length;
-    let sc='l', icon='🌱', msg='万事开头难！再试一次吧。';
-    if (correct===total) { sc='p'; icon='🎉'; msg='满分！太棒了！你对这个语法点掌握得非常好。'; shootConfetti(); }
-    else if (correct>=4) { sc='g'; icon='🌟'; msg='很好！只错了一个，再复习一下就更完美了。'; }
-    else if (correct>=3) { sc='o'; icon='📖'; msg='还不错！建议重看知识点再试一次。'; }
-    else if (correct>=2) { sc='l'; icon='💪'; msg='还需努力！仔细读一遍知识点然后重做。'; }
+    // Explanation
+    h += `<div class="exp-card">`;
+    h += `<h3>📚 知识点讲解</h3>`;
+    h += `<p class="summary">${lsn.summary}</p>`;
+    h += `<div class="point-grid">`;
+    lsn.points.forEach((pt,i)=>{
+      const icons = ['❶','❷','❸','❹','❺','❻'];
+      h += `<div class="point-item"><span class="pi-icon">${icons[i]||'•'}</span><span>${pt}</span></div>`;
+    });
+    h += `</div>`;
+    h += `<div class="examples-box"><div class="ex-label">💡 例句</div>`;
+    lsn.examples.forEach(e=>{ h+=`<p>${e}</p>`; });
+    h += `</div>`;
+    h += `</div>`;
 
-    h += `<div class="result"><div class="r-icon">${icon}</div>`;
-    h += `<div class="r-score ${sc}">${correct}/${total}</div>`;
-    h += `<div class="r-label">你的得分</div><div class="r-msg">${msg}</div>`;
-    h += `<div class="r-actions">`;
-    h += `<button class="btn-retry" onclick="retryLesson()">🔄 重新挑战</button>`;
-    if (lsn.id < LESSONS.length) h += `<button class="btn-next" onclick="openLesson(${lsn.id+1})">下一课 →</button>`;
-    h += `</div></div>`;
-    saveLP(lsn.id, correct);
+    // Big CTA
+    h += `<div style="text-align:center;margin-top:28px">`;
+    h += `<button class="wl-start" onclick="startQuiz()" style="font-size:1.1rem;padding:16px 48px">`;
+    h += `✏️ 开始练习 <span style="font-weight:400;opacity:0.8;margin-left:4px">（共 ${lsn.questions.length} 题）</span></button>`;
+    if (p.completed) {
+      h += `<p style="margin-top:12px;font-size:0.82rem;color:var(--text-3)">上次得分：${p.bestScore}/5 · ${p.lastAttempt}</p>`;
+    }
+    h += `</div>`;
+
   } else {
-    h += `<div class="quiz-section">`;
-    h += `<div class="quiz-header"><span class="quiz-counter">第 ${curQIdx+1} / ${lsn.questions.length} 题</span>`;
-    h += `<div class="quiz-dots">`;
-    for (let i=0;i<lsn.questions.length;i++) {
-      let cls=''; if (i<curAnswers.length) cls=curAnswers[i].correct?'done':'wrong'; else if (i===curQIdx) cls='cur';
-      h += `<div class="quiz-dot ${cls}"></div>`;
-    }
-    h += `</div></div>`;
+    // ====== QUIZ MODE ======
+    // Back link
+    h += `<div style="margin-bottom:18px"><button onclick="backToLearn()" style="background:none;border:none;color:var(--brand);cursor:pointer;font-size:0.85rem;font-family:var(--font);font-weight:600">← 返回查看知识点</button></div>`;
 
-    const q = lsn.questions[curQIdx];
-    h += `<div class="q-card">`;
-    h += `<span class="q-type">${q.type==='choice'?'🔤 选择题':'✏️ 填空题'}</span>`;
-    h += `<div class="q-text">${q.q}</div>`;
+    if (curQIdx >= lsn.questions.length) {
+      // Result
+      const correct = curAnswers.filter(a=>a.correct).length;
+      const total = lsn.questions.length;
+      let sc='l', icon='🌱', msg='万事开头难！再试一次吧。';
+      if (correct===total) { sc='p'; icon='🎉'; msg='满分！太棒了！你对这个语法点掌握得非常好。'; shootConfetti(); }
+      else if (correct>=4) { sc='g'; icon='🌟'; msg='很好！只错了一个，回到知识点复习一下就更完美了。'; }
+      else if (correct>=3) { sc='o'; icon='📖'; msg='还不错！建议回到知识点再复习一遍。'; }
+      else if (correct>=2) { sc='l'; icon='💪'; msg='还需努力！回去仔细读知识点，然后重做。'; }
 
-    if (q.type === 'choice') {
-      h += `<div class="options" id="optWrap">`;
-      const letters = ['A','B','C','D'];
-      q.options.forEach((o,i) => {
-        h += `<button class="opt" onclick="selChoice(${i})" data-idx="${i}"><span class="letter">${letters[i]}</span><span>${o}</span></button>`;
-      });
-      h += `</div>`;
+      h += `<div class="result"><div class="r-icon">${icon}</div>`;
+      h += `<div class="r-score ${sc}">${correct}/${total}</div>`;
+      h += `<div class="r-label">你的得分</div><div class="r-msg">${msg}</div>`;
+      h += `<div class="r-actions">`;
+      h += `<button class="btn-retry" onclick="retryLesson()">🔄 重新挑战</button>`;
+      h += `<button class="btn-retry" onclick="backToLearn()" style="background:var(--brand-light);color:var(--brand)">📖 复习知识点</button>`;
+      if (lsn.id < LESSONS.length) h += `<button class="btn-next" onclick="openLesson(${lsn.id+1})">下一课 →</button>`;
+      h += `</div></div>`;
+      saveLP(lsn.id, correct);
     } else {
-      h += `<div class="fill-row"><input class="fill-input" id="fillIn" placeholder="输入答案..." onkeydown="if(event.key==='Enter')subFill()" autocomplete="off"><button class="btn-submit" onclick="subFill()">确认</button></div>`;
+      h += `<div class="quiz-section">`;
+      h += `<div class="quiz-header"><span class="quiz-counter">第 ${curQIdx+1} 题 / 共 ${lsn.questions.length} 题</span>`;
+      h += `<div class="quiz-dots">`;
+      for (let i=0;i<lsn.questions.length;i++) {
+        let cls=''; if (i<curAnswers.length) cls=curAnswers[i].correct?'done':'wrong'; else if (i===curQIdx) cls='cur';
+        h += `<div class="quiz-dot ${cls}"></div>`;
+      }
+      h += `</div></div>`;
+
+      const q = lsn.questions[curQIdx];
+      h += `<div class="q-card">`;
+      h += `<span class="q-type">${q.type==='choice'?'🔤 选择题':'✏️ 填空题'}</span>`;
+      h += `<div class="q-text">${q.q}</div>`;
+
+      if (q.type === 'choice') {
+        h += `<div class="options" id="optWrap">`;
+        const letters = ['A','B','C','D'];
+        q.options.forEach((o,i) => {
+          h += `<button class="opt" onclick="selChoice(${i})" data-idx="${i}"><span class="letter">${letters[i]}</span><span>${o}</span></button>`;
+        });
+        h += `</div>`;
+      } else {
+        h += `<div class="fill-row"><input class="fill-input" id="fillIn" placeholder="输入答案..." onkeydown="if(event.key==='Enter')subFill()" autocomplete="off"><button class="btn-submit" onclick="subFill()">确认</button></div>`;
+      }
+      h += `<div class="fb" id="fb"></div></div></div>`;
     }
-    h += `<div class="fb" id="fb"></div></div></div>`;
   }
 
   document.getElementById('mainContent').innerHTML = h;
@@ -611,7 +648,7 @@ function showFB(ok, ans) {
   fb.textContent = ok ? '✓ 正确！太棒了！' : '✗ 不对哦。正确答案：'+ans;
 }
 
-function retryLesson() { curQIdx = 0; curAnswers = []; renderLesson(); }
+function retryLesson() { lessonPhase = 'quiz'; curQIdx = 0; curAnswers = []; renderLesson(); }
 
 function renderWelcome() {
   const done = completeCount();
