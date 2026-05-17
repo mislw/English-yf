@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>英语语法 — 从零开始</title>
+<style>
+/* ===== CSS Variables ===== */
+:root {
+  --color-bg: #fafaf9;
+  --color-surface: #ffffff;
+  --color-border: #e7e5e4;
+  --color-text: #1c1917;
+  --color-text-secondary: #57534e;
+  --color-text-muted: #a8a29e;
+  --color-accent: #2563eb;
+  --color-accent-light: #dbeafe;
+  --color-success: #16a34a;
+  --color-success-light: #dcfce7;
+  --color-error: #dc2626;
+  --color-error-light: #fef2f2;
+  --color-warning: #f59e0b;
+  --color-warning-light: #fffbeb;
+  --color-a1: #16a34a;
+  --color-a2: #2563eb;
+  --color-b1: #9333ea;
+  --sidebar-width: 260px;
+  --radius: 10px;
+  --radius-sm: 6px;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.04), 0 2px 4px rgba(0,0,0,0.04);
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans SC', sans-serif;
+  --font-mono: 'SF Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
+  --transition: 150ms ease;
+}
+
+/* ===== Reset ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  font-family: var(--font-sans);
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ===== Layout ===== */
+.app { display: flex; min-height: 100vh; }
+
+/* Sidebar */
+.sidebar {
+  width: var(--sidebar-width);
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  z-index: 10;
+  overflow-y: auto;
+}
+.sidebar-header {
+  padding: 20px 20px 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+.sidebar-header h1 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.sidebar-header .subtitle {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+.sidebar-stats {
+  display: flex;
+  gap: 12px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--color-border);
+}
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+.stat-value { font-size: 1.25rem; font-weight: 700; color: var(--color-accent); }
+.stat-label { font-size: 0.7rem; color: var(--color-text-muted); }
+
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+.nav-group-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  padding: 12px 20px 4px;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background var(--transition);
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  font-size: 0.875rem;
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  position: relative;
+}
+.nav-item:hover { background: #f5f5f4; }
+.nav-item.active { background: var(--color-accent-light); color: var(--color-accent); font-weight: 600; }
+.nav-item .level-badge {
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 999px;
+  color: white;
+  flex-shrink: 0;
+}
+.level-badge.a1 { background: var(--color-a1); }
+.level-badge.a2 { background: var(--color-a2); }
+.level-badge.b1 { background: var(--color-b1); }
+.nav-item .check-icon {
+  margin-left: auto;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem;
+  flex-shrink: 0;
+}
+.check-icon.done { background: var(--color-success); color: white; }
+.check-icon.undone { border: 1.5px solid var(--color-border); color: transparent; }
+.nav-item .lesson-num {
+  width: 24px; height: 24px;
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: #f5f5f4;
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+}
+.nav-item.active .lesson-num { background: var(--color-accent); color: white; }
+
+/* Main */
+.main {
+  margin-left: var(--sidebar-width);
+  flex: 1;
+  padding: 32px 40px;
+  max-width: 800px;
+}
+.mobile-nav {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  z-index: 10;
+  padding: 6px 0 env(safe-area-inset-bottom, 6px);
+}
+.mobile-nav-inner {
+  display: flex;
+  justify-content: space-around;
+}
+.mobile-nav-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 12px;
+  border: none;
+  background: none;
+  color: var(--color-text-muted);
+  font-size: 0.65rem;
+  cursor: pointer;
+  font-family: var(--font-sans);
+}
+.mobile-nav-btn.active { color: var(--color-accent); }
+.mobile-nav-btn svg { width: 20px; height: 20px; }
+
+/* Lesson Content */
+.lesson-header {
+  margin-bottom: 28px;
+}
+.lesson-header .level-tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 999px;
+  color: white;
+  margin-bottom: 8px;
+}
+.level-tag.A1 { background: var(--color-a1); }
+.level-tag.A2 { background: var(--color-a2); }
+.level-tag.B1 { background: var(--color-b1); }
+.lesson-header h2 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+.lesson-header .en-title {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  margin-top: 4px;
+}
+
+/* Explanation Section */
+.explanation-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 28px;
+  box-shadow: var(--shadow-sm);
+}
+.explanation-card h3 {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  margin-bottom: 16px;
+}
+.explanation-card .summary {
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 18px;
+  line-height: 1.7;
+}
+.point-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.point-list li {
+  padding: 12px 16px;
+  background: #fafaf9;
+  border-left: 3px solid var(--color-accent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+.point-list li strong { color: var(--color-accent); }
+.example-block {
+  margin-top: 18px;
+  padding: 14px 16px;
+  background: var(--color-accent-light);
+  border-radius: var(--radius-sm);
+}
+.example-block .example-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-accent);
+  margin-bottom: 8px;
+}
+.example-block p {
+  font-size: 0.9rem;
+  color: var(--color-text);
+  margin-bottom: 4px;
+}
+.example-block p .en { color: var(--color-accent); font-weight: 500; }
+
+/* Quiz Section */
+.quiz-section { margin-top: 8px; }
+.quiz-progress-bar {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 24px;
+}
+.quiz-dot {
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--color-border);
+  transition: background var(--transition);
+}
+.quiz-dot.answered { background: var(--color-accent); }
+.quiz-dot.correct { background: var(--color-success); }
+.quiz-dot.wrong { background: var(--color-error); }
+.quiz-dot.current { background: var(--color-text-secondary); }
+
+.question-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-sm);
+  animation: fadeIn 0.25s ease;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.question-card .q-num {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+.question-card .q-text {
+  font-size: 1.05rem;
+  font-weight: 500;
+  margin-bottom: 18px;
+  line-height: 1.6;
+}
+.question-card .q-text .blank {
+  display: inline-block;
+  min-width: 80px;
+  border-bottom: 2px dashed var(--color-accent);
+  color: var(--color-accent);
+  padding: 0 4px;
+}
+
+/* Options */
+.options { display: flex; flex-direction: column; gap: 8px; }
+.option-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-family: var(--font-sans);
+  transition: all var(--transition);
+  text-align: left;
+}
+.option-btn:hover { border-color: var(--color-accent); background: #fafaff; }
+.option-btn.selected { border-color: var(--color-accent); background: var(--color-accent-light); }
+.option-btn.correct-choice { border-color: var(--color-success); background: var(--color-success-light); }
+.option-btn.wrong-choice { border-color: var(--color-error); background: var(--color-error-light); }
+.option-btn:disabled { cursor: default; }
+.option-letter {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: #f5f5f4;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+}
+.option-btn.correct-choice .option-letter { background: var(--color-success); color: white; }
+.option-btn.wrong-choice .option-letter { background: var(--color-error); color: white; }
+
+/* Fill Input */
+.fill-input-wrap {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.fill-input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
+  font-family: var(--font-sans);
+  transition: border-color var(--transition);
+  outline: none;
+}
+.fill-input:focus { border-color: var(--color-accent); }
+.fill-input.correct-fill { border-color: var(--color-success); background: var(--color-success-light); }
+.fill-input.wrong-fill { border-color: var(--color-error); background: var(--color-error-light); }
+.fill-input:disabled { background: #fafaf9; }
+.submit-btn {
+  padding: 10px 20px;
+  background: var(--color-accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  transition: opacity var(--transition);
+  white-space: nowrap;
+}
+.submit-btn:hover { opacity: 0.9; }
+.submit-btn:disabled { opacity: 0.4; cursor: default; }
+
+/* Feedback */
+.feedback {
+  margin-top: 12px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  display: none;
+  animation: fadeIn 0.2s ease;
+}
+.feedback.show { display: block; }
+.feedback.correct { background: var(--color-success-light); color: #15803d; }
+.feedback.wrong { background: var(--color-error-light); color: #b91c1c; }
+
+/* Result Panel */
+.result-panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 32px;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+  animation: fadeIn 0.3s ease;
+}
+.result-panel .big-score {
+  font-size: 4rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.big-score.perfect { color: var(--color-success); }
+.big-score.good { color: var(--color-accent); }
+.big-score.ok { color: var(--color-warning); }
+.big-score.low { color: var(--color-error); }
+.result-panel .score-label {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  margin: 8px 0 20px;
+}
+.result-panel .result-msg {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+.retry-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 24px;
+  background: var(--color-accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  transition: opacity var(--transition);
+}
+.retry-btn:hover { opacity: 0.9; }
+
+/* Welcome / Empty State */
+.welcome {
+  text-align: center;
+  padding: 60px 20px;
+}
+.welcome h2 { font-size: 1.75rem; font-weight: 800; letter-spacing: -0.02em; }
+.welcome p { color: var(--color-text-secondary); margin-top: 8px; max-width: 400px; margin-inline: auto; }
+.welcome .start-hint {
+  margin-top: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 28px;
+  background: var(--color-accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-sans);
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .main { margin-left: 0; padding: 20px 16px 100px; max-width: 100%; }
+  .mobile-nav { display: block; }
+  .lesson-header h2 { font-size: 1.4rem; }
+  .explanation-card { padding: 18px; }
+  .question-card { padding: 18px; }
+  .result-panel { padding: 24px; }
+}
+/* Desktop sidebar toggle */
+@media (min-width: 769px) {
+  .mobile-nav { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h1>📖 英语语法</h1>
+      <div class="subtitle">从零开始 · 体系化学习</div>
+    </div>
+    <div class="sidebar-stats">
+      <div class="stat-item">
+        <span class="stat-value" id="statCompleted">0</span>
+        <span class="stat-label">已完成</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value" id="statAvg">-</span>
+        <span class="stat-label">平均分</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value" id="statBest">-</span>
+        <span class="stat-label">最高分</span>
+      </div>
+    </div>
+    <nav class="sidebar-nav" id="lessonNav"></nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main" id="mainContent"></main>
+
+  <!-- Mobile Bottom Nav -->
+  <nav class="mobile-nav">
+    <div class="mobile-nav-inner">
+      <button class="mobile-nav-btn active" onclick="switchMobileTab(0)" id="mobTab0">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        学习
+      </button>
+      <button class="mobile-nav-btn" onclick="switchMobileTab(1)" id="mobTab1">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        进度
+      </button>
+    </div>
+  </nav>
+</div>
+
+<script>
+// ===== DATA =====
+const LESSONS = [
+  {
+    id: 1, title: '名词与冠词', enTitle: 'Nouns & Articles', level: 'A1',
+    summary: '名词表示人、事物、地点或抽象概念。英语中名词前常需要加冠词 a、an 或 the，中文里没有这个习惯，所以需要特别注意。',
+    points: [
+      '<strong>可数名词</strong>有单复数：apple → apples，box → boxes',
+      '<strong>不可数名词</strong>没有复数：water, rice, information',
+      '<strong>a/an</strong> 用于泛指的单数可数名词前：a cat, an apple（an 用于元音音素开头的词前）',
+      '<strong>the</strong> 用于特指，双方都知道的东西：the sun, the book on the table',
+      '复数名词和不可数名词泛指时<strong>不加冠词</strong>：I like music. Cats are cute.',
+    ],
+    examples: [
+      'I saw <span class="en">a dog</span> in the park. 我在公园看到一只狗。',
+      'She ate <span class="en">an orange</span>. 她吃了一个橙子。',
+      '<span class="en">The dog</span> is very friendly. 那只狗很友好。',
+      '<span class="en">Water</span> is important. 水很重要。',
+    ],
+    questions: [
+      { type: 'choice', q: 'I need ___ umbrella. It\'s raining.', options: ['a', 'an', 'the', '(不加冠词)'], answer: 1 },
+      { type: 'choice', q: '___ sun rises in the east.', options: ['A', 'An', 'The', '(不加冠词)'], answer: 2 },
+      { type: 'fill', q: 'She has two ___ (cat).', answer: 'cats' },
+      { type: 'choice', q: '___ milk is good for health.', options: ['A', 'An', 'The', '(不加冠词)'], answer: 3 },
+      { type: 'fill', q: 'I bought ___ book yesterday. (一本)', answer: 'a' },
+    ],
+  },
+  {
+    id: 2, title: '人称代词', enTitle: 'Personal Pronouns', level: 'A1',
+    summary: '人称代词代替人或事物的名称。分为主格（做主语）和宾格（做宾语），还有形容词性物主代词（表示"谁的"）。',
+    points: [
+      '<strong>主格</strong>（主语位置）：I, you, he, she, it, we, they',
+      '<strong>宾格</strong>（宾语位置）：me, you, him, her, it, us, them',
+      '<strong>物主代词</strong>（表示所属）：my, your, his, her, its, our, their',
+      'he/him/his 指男性，she/her/her 指女性，<strong>it/its</strong> 指事物或动物',
+      '英语中<strong>必须有主语</strong>，不像中文可以省略："下雨了" → "It is raining."',
+    ],
+    examples: [
+      '<span class="en">He</span> is a teacher. 他是老师。（he 是主语）',
+      'I like <span class="en">her</span>. 我喜欢她。（her 是宾语）',
+      'This is <span class="en">my</span> book. 这是我的书。（my 表示所属）',
+      '<span class="en">It</span> is cold today. 今天很冷。（it 做形式主语）',
+    ],
+    questions: [
+      { type: 'choice', q: '___ is my best friend.', options: ['Her', 'She', 'Hers', 'Herself'], answer: 1 },
+      { type: 'fill', q: 'Please give ___ the book. (我，宾格)', answer: 'me' },
+      { type: 'choice', q: 'This is not your pen. It\'s ___ .', options: ['I', 'me', 'my', 'mine'], answer: 3 },
+      { type: 'fill', q: '___ are students. (我们)', answer: 'We' },
+      { type: 'choice', q: 'Look at that dog! ___ tail is very long.', options: ['It', 'Its', 'It\'s', 'His'], answer: 1 },
+    ],
+  },
+  {
+    id: 3, title: 'Be 动词', enTitle: 'Verb "to be"', level: 'A1',
+    summary: 'be 动词是英语中最基础的动词，表示"是、在、存在"。根据主语的人称和数，be 动词有三种形式：am、is、are。',
+    points: [
+      '<strong>I → am</strong>：I am a student.',
+      '<strong>he/she/it → is</strong>：She is happy. It is big.',
+      '<strong>we/you/they → are</strong>：We are friends. You are kind.',
+      '否定形式：am not / <strong>isn\'t</strong> (is not) / <strong>aren\'t</strong> (are not)',
+      '疑问形式：把 be 动词提到句首：<strong>Is</strong> he a doctor? → Yes, he is. / No, he isn\'t.',
+    ],
+    examples: [
+      '<span class="en">I am</span> from China. 我来自中国。',
+      '<span class="en">She is</span> a doctor. 她是一名医生。',
+      '<span class="en">They are</span> happy. 他们很开心。',
+      '<span class="en">Is it</span> cold? 冷吗？',
+    ],
+    questions: [
+      { type: 'fill', q: 'I ___ a student. (be 动词)', answer: 'am' },
+      { type: 'choice', q: 'She ___ very tall.', options: ['am', 'is', 'are', 'be'], answer: 1 },
+      { type: 'fill', q: 'They ___ not here. (be 动词, 否定缩写)', answer: "aren't" },
+      { type: 'choice', q: '___ you a teacher?', options: ['Am', 'Is', 'Are', 'Be'], answer: 2 },
+      { type: 'fill', q: 'He ___ from Japan. (be 动词)', answer: 'is' },
+    ],
+  },
+  {
+    id: 4, title: '一般现在时', enTitle: 'Present Simple', level: 'A1',
+    summary: '一般现在时表示经常性、习惯性的动作或普遍真理。是最常用的时态之一。',
+    points: [
+      '基本结构：<strong>主语 + 动词原形</strong>（第三人称单数加 -s/-es）',
+      '<strong>I/You/We/They + 动词原形</strong>：I play basketball every day.',
+      '<strong>He/She/It + 动词+s/es</strong>：She plays basketball every day.',
+      '否定：don\'t / <strong>doesn\'t</strong> + 动词原形：He doesn\'t like coffee.',
+      '疑问：<strong>Do/Does</strong> + 主语 + 动词原形：Does she work here?',
+      '用于<strong>客观事实</strong>：The earth goes around the sun.',
+    ],
+    examples: [
+      'I <span class="en">get up</span> at 7:00 every day. 我每天7点起床。',
+      'She <span class="en">works</span> in a hospital. 她在医院工作。',
+      'He <span class="en">doesn\'t eat</span> meat. 他不吃肉。',
+      '<span class="en">Do</span> you <span class="en">like</span> music? 你喜欢音乐吗？',
+    ],
+    questions: [
+      { type: 'fill', q: 'She ___ (play) the piano every evening.', answer: 'plays' },
+      { type: 'choice', q: 'He ___ to school by bus.', options: ['go', 'gos', 'goes', 'going'], answer: 2 },
+      { type: 'fill', q: 'They ___ (not like) spicy food. (don\'t/doesn\'t)', answer: "don't like" },
+      { type: 'choice', q: '___ she know the answer?', options: ['Do', 'Does', 'Is', 'Are'], answer: 1 },
+      { type: 'fill', q: 'The sun ___ (rise) in the east.', answer: 'rises' },
+    ],
+  },
+  {
+    id: 5, title: '现在进行时', enTitle: 'Present Continuous', level: 'A2',
+    summary: '现在进行时表示此刻正在进行的动作，或现阶段持续在做的事情。',
+    points: [
+      '结构：<strong>am/is/are + 动词-ing</strong>',
+      'I am reading. / She is cooking. / They are playing.',
+      '否定：am not / isn\'t / aren\'t + 动词-ing',
+      '疑问：Is/Are + 主语 + 动词-ing？',
+      '<strong>现在进行时 vs 一般现在时</strong>：进行时强调"正在发生"，一般现在时是"经常发生"',
+      '某些动词<strong>通常不用进行时</strong>：know, want, like, believe, understand',
+    ],
+    examples: [
+      'She <span class="en">is reading</span> a book now. 她正在看书。',
+      'I <span class="en">am studying</span> English. 我正在学英语。',
+      '<span class="en">Are</span> you <span class="en">listening</span>? 你在听吗？',
+      'I <span class="en">know</span> the answer. (✓) / I <s>am knowing</s> the answer. (✗)',
+    ],
+    questions: [
+      { type: 'fill', q: 'Look! The cat ___ (sleep) on the sofa.', answer: 'is sleeping' },
+      { type: 'choice', q: 'Listen! Someone ___ at the door.', options: ['knocks', 'is knocking', 'knock', 'are knocking'], answer: 1 },
+      { type: 'fill', q: 'We ___ (study) for the exam right now.', answer: 'are studying' },
+      { type: 'choice', q: 'Which sentence is correct?', options: ['I am wanting a drink.', 'I am wanting a drink now.', 'I want a drink.', 'I wanting a drink.'], answer: 2 },
+      { type: 'fill', q: 'He ___ (not work) today. He is on vacation.', answer: "isn't working" },
+    ],
+  },
+  {
+    id: 6, title: '一般过去时', enTitle: 'Past Simple', level: 'A2',
+    summary: '一般过去时表示过去某个时间发生的动作或状态，与现在没有直接联系。',
+    points: [
+      '结构：<strong>主语 + 动词过去式</strong>',
+      '<strong>规则动词</strong>加 -ed：work → worked, play → played, study → studied',
+      '<strong>不规则动词</strong>需牢记：go → went, eat → ate, see → saw, have → had',
+      '否定：<strong>didn\'t + 动词原形</strong>（注意：用了 didn\'t 后动词变回原形！）',
+      '疑问：<strong>Did + 主语 + 动词原形</strong>？',
+      'be 动词过去式：<strong>was/were</strong>（I/he/she/it → was，we/you/they → were）',
+    ],
+    examples: [
+      'I <span class="en">went</span> to Beijing last week. 我上周去了北京。',
+      'She <span class="en">didn\'t come</span> to the party. 她没来参加聚会。',
+      '<span class="en">Did</span> you <span class="en">watch</span> the movie? 你看那部电影了吗？',
+      'They <span class="en">were</span> very happy. 他们当时很开心。',
+    ],
+    questions: [
+      { type: 'fill', q: 'I ___ (go) to the park yesterday.', answer: 'went' },
+      { type: 'choice', q: 'She ___ the game last night.', options: ['didn\'t watched', 'didn\'t watch', 'not watched', 'wasn\'t watch'], answer: 1 },
+      { type: 'fill', q: '___ (do) you see him last week?', answer: 'Did' },
+      { type: 'choice', q: 'They ___ at home all day yesterday.', options: ['was', 'were', 'are', 'did'], answer: 1 },
+      { type: 'fill', q: 'He ___ (eat) pizza for lunch.', answer: 'ate' },
+    ],
+  },
+  {
+    id: 7, title: '将来时', enTitle: 'Future Tenses', level: 'A2',
+    summary: '英语中表达将来有多种方式，最常用的是 will 和 be going to，两者有细微区别。',
+    points: [
+      '<strong>will + 动词原形</strong>：临时决定、预测、承诺：I will help you.',
+      '<strong>be going to + 动词原形</strong>：计划好的、有迹象的事：It\'s going to rain.',
+      'will 的否定：<strong>won\'t</strong> (will not)',
+      '也可以用<strong>现在进行时</strong>表将来（已安排好的）：I\'m meeting her tomorrow.',
+      '<strong>区别</strong>：看到乌云 → It\'s going to rain. 纯粹预测 → It will rain tomorrow.',
+    ],
+    examples: [
+      'I <span class="en">will call</span> you later. 我晚点打给你。（临时决定）',
+      'We <span class="en">are going to visit</span> London next month. 我们计划下个月去伦敦。',
+      'She <span class="en">won\'t be</span> late. 她不会迟到的。',
+      '<span class="en">Will</span> you <span class="en">marry</span> me? 你愿意嫁给我吗？',
+    ],
+    questions: [
+      { type: 'choice', q: 'Look at those clouds! It ___.', options: ['will rain', 'is going to rain', 'rains', 'is raining'], answer: 1 },
+      { type: 'fill', q: 'I ___ (help) you with that. (临时决定帮忙)', answer: 'will help' },
+      { type: 'choice', q: 'She ___ 20 next month.', options: ['is', 'will be', 'is going to be', 'was'], answer: 1 },
+      { type: 'fill', q: 'We ___ (visit) our grandparents this weekend. (已计划好)', answer: 'are going to visit' },
+      { type: 'fill', q: 'He ___ (not come) to the party. (won\'t)', answer: "won't come" },
+    ],
+  },
+  {
+    id: 8, title: '现在完成时', enTitle: 'Present Perfect', level: 'A2',
+    summary: '现在完成时连接过去和现在，表示过去的动作对现在有影响，或从过去持续到现在的状态。这是中文没有的概念，需要多练。',
+    points: [
+      '结构：<strong>have/has + 过去分词</strong>',
+      'I/You/We/They → have done / He/She/It → has done',
+      '<strong>用法一</strong>：过去发生的动作，对现在有影响：I have lost my key.（现在找不到钥匙了）',
+      '<strong>用法二</strong>：从过去持续到现在：I have lived here for 10 years.',
+      '<strong>标志词</strong>：already, yet, just, ever, never, since, for',
+      '<strong>与一般过去时的区别</strong>：过去时只讲过去的事（I lost my key yesterday），现在完成时强调对现在的影响',
+    ],
+    examples: [
+      'I <span class="en">have finished</span> my homework. 我做完作业了。（现在可以玩了）',
+      'She <span class="en">has been</span> to Paris three times. 她去过巴黎三次。',
+      '<span class="en">Have</span> you <span class="en">ever eaten</span> sushi? 你吃过寿司吗？',
+      'I <span class="en">haven\'t seen</span> him since Monday. 我从周一起就没见过他。',
+    ],
+    questions: [
+      { type: 'fill', q: 'I ___ (finish) my work. Now I can relax.', answer: 'have finished' },
+      { type: 'choice', q: 'She ___ to Japan twice.', options: ['went', 'has been', 'has gone', 'goes'], answer: 1 },
+      { type: 'fill', q: '___ you ever ___ (try) Indian food?', answer: 'Have tried' },
+      { type: 'choice', q: 'I ___ my key. I can\'t open the door.', options: ['lost', 'have lost', 'am losing', 'lose'], answer: 1 },
+      { type: 'fill', q: 'He ___ (not call) me yet.', answer: "hasn't called" },
+    ],
+  },
+  {
+    id: 9, title: '形容词与副词', enTitle: 'Adjectives & Adverbs', level: 'A1',
+    summary: '形容词用来修饰名词，副词用来修饰动词、形容词或其他副词。中文里形容词和副词区分不明显，英语则需要注意形式变化。',
+    points: [
+      '<strong>形容词</strong>修饰名词：a beautiful flower, the weather is nice',
+      '<strong>副词</strong>修饰动词/形容词：「形容词 + ly」：quick → quickly, careful → carefully',
+      '<strong>不规则副词</strong>：good → well, fast → fast, hard → hard',
+      '形容词<strong>放在名词前</strong>，或 be 动词后：She is happy.',
+      '<strong>比较级</strong>：-er / more — <strong>最高级</strong>：-est / most',
+      '多个形容词的顺序：观点→大小→形状→颜色→来源→材料：a beautiful small round red Chinese wooden box',
+    ],
+    examples: [
+      'She is a <span class="en">careful</span> driver. 她是个细心的司机。',
+      'She drives <span class="en">carefully</span>. 她开车很小心。',
+      'He runs very <span class="en">fast</span>. 他跑得很快。（fast 副词不变）',
+      'This is <span class="en">more interesting</span> than that. 这个比那个更有趣。',
+    ],
+    questions: [
+      { type: 'fill', q: 'She sings ___ (beautiful).', answer: 'beautifully' },
+      { type: 'choice', q: 'He is a ___ runner.', options: ['fastly', 'fast', 'faster', 'fastest'], answer: 1 },
+      { type: 'fill', q: 'This flower is ___ (pretty) than that one.', answer: 'prettier' },
+      { type: 'choice', q: 'She did ___ in the exam.', options: ['good', 'well', 'nice', 'fine'], answer: 1 },
+      { type: 'fill', q: 'It is the ___ (big) building in the city.', answer: 'biggest' },
+    ],
+  },
+  {
+    id: 10, title: '介词', enTitle: 'Prepositions', level: 'A2',
+    summary: '介词表示名词与其他词之间的关系，尤其是时间(in/on/at)和空间位置。介词搭配是英语学习中最容易出错的部分之一。',
+    points: [
+      '<strong>时间 at</strong>：具体时刻 at 7:00, at noon, at night',
+      '<strong>时间 on</strong>：具体某天 on Monday, on May 1st, on my birthday',
+      '<strong>时间 in</strong>：较长时段 in May, in summer, in 2024, in the morning',
+      '<strong>地点 at</strong>：具体点 at the door, at the station',
+      '<strong>地点 on</strong>：表面 on the table, on the wall',
+      '<strong>地点 in</strong>：空间内部 in the room, in Beijing, in the car',
+    ],
+    examples: [
+      'I\'ll see you <span class="en">at</span> 3:00. 三点见。',
+      'Her birthday is <span class="en">on</span> June 5th. 她生日是6月5日。',
+      'I was born <span class="en">in</span> 2000. 我出生于2000年。',
+      'The book is <span class="en">on</span> the desk. 书在桌子上。',
+    ],
+    questions: [
+      { type: 'fill', q: 'I usually get up ___ 7:00.', answer: 'at' },
+      { type: 'choice', q: 'We go to the beach ___ summer.', options: ['at', 'on', 'in', 'for'], answer: 2 },
+      { type: 'fill', q: 'See you ___ Monday!', answer: 'on' },
+      { type: 'choice', q: 'The cat is hiding ___ the bed.', options: ['at', 'on', 'in', 'under'], answer: 3 },
+      { type: 'fill', q: 'She lives ___ a small town.', answer: 'in' },
+    ],
+  },
+  {
+    id: 11, title: '情态动词', enTitle: 'Modal Verbs', level: 'A2',
+    summary: '情态动词表示说话人的态度和语气——能力、可能性、必要性、允许等。情态动词后永远跟动词原形。',
+    points: [
+      '<strong>can</strong>：能力、允许：I can swim. Can I go out?',
+      '<strong>could</strong>：过去的能力、委婉请求：Could you help me?',
+      '<strong>must</strong>：必须（主观）、肯定推测：You must stop. He must be tired.',
+      '<strong>should</strong>：应该（建议）：You should see a doctor.',
+      '<strong>may/might</strong>：可能、允许（正式）：It may rain. May I come in?',
+      '情态动词<strong>无三单变化</strong>：She can swim. (✓) / She cans swim. (✗)',
+    ],
+    examples: [
+      'I <span class="en">can</span> speak English. 我会说英语。',
+      'You <span class="en">must</span> wear a seatbelt. 你必须系安全带。',
+      'You <span class="en">should</span> exercise more. 你应该多锻炼。',
+      '<span class="en">Could</span> you open the window? 你能开一下窗吗？',
+    ],
+    questions: [
+      { type: 'fill', q: 'She ___ swim very well. (会，表能力)', answer: 'can' },
+      { type: 'choice', q: 'You ___ smoking. It\'s bad for you.', options: ['can stop', 'should stop', 'must to stop', 'stopped'], answer: 1 },
+      { type: 'fill', q: '___ I use your phone? (委婉请求)', answer: 'Could' },
+      { type: 'choice', q: 'It ___ rain later. Take an umbrella.', options: ['must', 'should', 'might', 'can'], answer: 2 },
+      { type: 'fill', q: 'You ___ be 18 to vote. (必须)', answer: 'must' },
+    ],
+  },
+  {
+    id: 12, title: '条件句入门', enTitle: 'Conditionals', level: 'B1',
+    summary: '条件句表达"如果……就……"的逻辑关系。英语中最常用的是第一条件句（真实可能）和第二条件句（虚拟假设）。',
+    points: [
+      '<strong>Zero Conditional</strong>（普遍真理）：If + 一般现在时, 一般现在时 — If you heat ice, it melts.',
+      '<strong>First Conditional</strong>（真实将来）：If + 一般现在时, will + 动词原形 — If it rains, I will stay home.',
+      '<strong>Second Conditional</strong>（虚拟现在）：If + 过去时, would + 动词原形 — If I were rich, I would travel the world.',
+      '第一条件句：条件是<strong>可能发生</strong>的；第二条件句：条件是<strong>不现实/假设</strong>的',
+      '第二条件句中 was → <strong>were</strong>（虚拟语气）：If I were you, I would go.',
+    ],
+    examples: [
+      '<span class="en">If</span> you <span class="en">study</span> hard, you <span class="en">will pass</span> the exam. 如果你努力学习，就会通过考试。',
+      '<span class="en">If</span> I <span class="en">were</span> you, I <span class="en">would accept</span> the offer. 如果我是你，我会接受。',
+      '<span class="en">If</span> I <span class="en">had</span> a million dollars, I <span class="en">would buy</span> a house. 如果我有一百万，我会买房子。（事实：没有）',
+    ],
+    questions: [
+      { type: 'fill', q: 'If it rains, I ___ (stay) home. (第一条件句)', answer: 'will stay' },
+      { type: 'choice', q: 'If I ___ you, I would apologize.', options: ['am', 'was', 'were', 'be'], answer: 2 },
+      { type: 'fill', q: 'If you heat water to 100°C, it ___ (boil). (零条件句)', answer: 'boils' },
+      { type: 'choice', q: 'If she ___ harder, she will get a promotion.', options: ['work', 'works', 'worked', 'will work'], answer: 1 },
+      { type: 'fill', q: 'If I had more time, I ___ (learn) Spanish.', answer: 'would learn' },
+    ],
+  },
+  {
+    id: 13, title: '被动语态', enTitle: 'Passive Voice', level: 'B1',
+    summary: '被动语态强调动作的承受者而非执行者。在中文里我们用"被"字表达，英语中结构为 be + 过去分词。',
+    points: [
+      '结构：<strong>be + 过去分词</strong>（be 随时态变化）',
+      '一般现在时被动：am/is/are + done — English is spoken worldwide.',
+      '一般过去时被动：was/were + done — The window was broken yesterday.',
+      '现在完成时被动：have/has been + done — The work has been finished.',
+      '情态动词被动：can/must + be + done — It must be done today.',
+      '<strong>何时用被动</strong>：动作执行者不重要/未知/显而易见时',
+    ],
+    examples: [
+      'English <span class="en">is spoken</span> in many countries. 英语在很多国家被使用。',
+      'The cake <span class="en">was made</span> by my mom. 蛋糕是我妈妈做的。',
+      'The room <span class="en">has been cleaned</span>. 房间已经被打扫了。',
+      'This door <span class="en">must be locked</span> at night. 这门晚上必须锁。',
+    ],
+    questions: [
+      { type: 'fill', q: 'The letters ___ (send) yesterday. (过去时被动)', answer: 'were sent' },
+      { type: 'choice', q: 'This book ___ by Mark Twain.', options: ['wrote', 'was written', 'is writing', 'has written'], answer: 1 },
+      { type: 'fill', q: 'The room ___ (clean) every day. (现在时被动)', answer: 'is cleaned' },
+      { type: 'choice', q: 'The homework must ___ by Friday.', options: ['finish', 'finished', 'be finished', 'being finished'], answer: 2 },
+      { type: 'fill', q: 'The window ___ (break) by a ball.', answer: 'was broken' },
+    ],
+  },
+  {
+    id: 14, title: '定语从句', enTitle: 'Relative Clauses', level: 'B1',
+    summary: '定语从句用来修饰名词，相当于一个"形容词"放在名词后面。引导词有 who、which、that、whose、where、when。',
+    points: [
+      '<strong>who</strong>：指人 — The girl who lives next door is friendly.',
+      '<strong>which</strong>：指物 — The book which I bought is interesting.',
+      '<strong>that</strong>：可指人也可指物（更口语） — The movie that I saw was great.',
+      '<strong>whose</strong>：表示"谁的" — I know a man whose son is a doctor.',
+      '<strong>where</strong>：指地点 — This is the house where I grew up.',
+      '<strong>限定 vs 非限定</strong>：非限定（有逗号）提供额外信息：My mother, who is 60, still works.',
+    ],
+    examples: [
+      'The woman <span class="en">who</span> is talking to Tom is my boss. 跟Tom说话的那个女的是我老板。',
+      'This is the restaurant <span class="en">where</span> we first met. 这就是我们第一次见面的餐厅。',
+      'I like books <span class="en">that</span> make me think. 我喜欢让我思考的书。',
+      'He is the student <span class="en">whose</span> project won the prize. 他就是那个项目获奖的学生。',
+    ],
+    questions: [
+      { type: 'fill', q: 'The person ___ called you is waiting outside. (指人)', answer: 'who' },
+      { type: 'choice', q: 'The car ___ he bought is very expensive.', options: ['who', 'whose', 'which', 'where'], answer: 2 },
+      { type: 'fill', q: 'This is the school ___ I studied. (指地点)', answer: 'where' },
+      { type: 'choice', q: 'I met a girl ___ mother is a pilot.', options: ['who', 'which', 'whose', 'where'], answer: 2 },
+      { type: 'fill', q: 'The movie ___ we watched was boring.', answer: 'that' },
+    ],
+  },
+  {
+    id: 15, title: '综合复习', enTitle: 'Final Review', level: 'B1',
+    summary: '这节综合复习覆盖前14课的核心知识点，检测你对整个语法体系的掌握程度。题目会混合不同语法点，模拟真实使用场景。',
+    points: [
+      '本节覆盖：时态、冠词、介词、情态动词、条件句、被动语态、定语从句的<strong>混合练习</strong>',
+      '建议<strong>先完成前面14课</strong>再来做综合复习',
+      '错题可以回到对应课程重新学习',
+      '学完本课程后，你的英语语法水平应该达到<strong>B1（中级）</strong>',
+    ],
+    examples: [
+      'If I <span class="en">had known</span> earlier, I <span class="en">would have helped</span>. 如果我早点知道，我就会帮忙的。',
+      'The report <span class="en">must be submitted</span> by Friday. 报告必须在周五前提交。',
+      'She is the teacher <span class="en">who inspired</span> me the most. 她是那个最激励我的老师。',
+    ],
+    questions: [
+      { type: 'choice', q: 'If it ___ tomorrow, we will cancel the picnic.', options: ['rain', 'rains', 'rained', 'will rain'], answer: 1 },
+      { type: 'fill', q: 'The decision ___ (make) yesterday. (被动)', answer: 'was made' },
+      { type: 'choice', q: 'I have lived here ___ 2015.', options: ['in', 'for', 'since', 'at'], answer: 2 },
+      { type: 'fill', q: 'She is the one ___ helped me. (定语从句引导词)', answer: 'who' },
+      { type: 'choice', q: 'By the time we arrived, the movie ___.', options: ['already started', 'had already started', 'has already started', 'starts'], answer: 1 },
+    ],
+  },
+];
+
+// ===== STATE =====
+const STORAGE_KEY = 'grammar_learning_progress';
+
+function loadProgress() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch { return {}; }
+}
+
+function saveProgress(p) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(p));
+}
+
+let progress = loadProgress();
+let currentLessonId = null;
+let currentQuestionIndex = 0;
+let currentAnswers = []; // { answer, correct } per question
+
+// ===== HELPERS =====
+function getLessonProgress(id) {
+  return progress[id] || { completed: false, score: 0, bestScore: 0 };
+}
+
+function updateLessonProgress(id, score) {
+  const prev = getLessonProgress(id);
+  progress[id] = {
+    completed: true,
+    score: score,
+    bestScore: Math.max(prev.bestScore, score),
+    lastAttempt: new Date().toISOString().split('T')[0],
+  };
+  saveProgress(progress);
+  updateSidebar();
+}
+
+function getCompletedCount() {
+  return LESSONS.filter(l => getLessonProgress(l.id).completed).length;
+}
+
+function getAverageScore() {
+  const completed = LESSONS.filter(l => getLessonProgress(l.id).completed);
+  if (completed.length === 0) return null;
+  const sum = completed.reduce((s, l) => s + getLessonProgress(l.id).bestScore, 0);
+  return Math.round(sum / completed.length);
+}
+
+function getBestSingleScore() {
+  const scores = LESSONS.map(l => getLessonProgress(l.id).bestScore).filter(s => s > 0);
+  return scores.length > 0 ? Math.max(...scores) : null;
+}
+
+// ===== RENDER SIDEBAR =====
+function buildNavItem(l, i) {
+  const p = getLessonProgress(l.id);
+  const active = currentLessonId === l.id ? ' active' : '';
+  const checkClass = p.completed ? 'done' : 'undone';
+  const checkContent = p.completed ? '✓' : '';
+  const levelClass = l.level.toLowerCase();
+  return `
+    <button class="nav-item${active}" onclick="openLesson(${l.id})" data-lesson="${l.id}">
+      <span class="lesson-num">${i + 1}</span>
+      <span>${l.title}</span>
+      <span class="level-badge ${levelClass}">${l.level}</span>
+      <span class="check-icon ${checkClass}">${checkContent}</span>
+    </button>
+  `;
+}
+
+function updateSidebar() {
+  const nav = document.getElementById('lessonNav');
+  const groups = { A1: [], A2: [], B1: [] };
+  LESSONS.forEach((l, i) => {
+    const group = ['A1','A2','B1'].includes(l.level) ? l.level : 'A2';
+    groups[group].push({ lesson: l, index: i });
+  });
+
+  let html = '';
+  for (const [group, items] of Object.entries(groups)) {
+    if (items.length === 0) continue;
+    const labels = { A1: '基础', A2: '进阶', B1: '中级' };
+    html += `<div class="nav-group-label">${labels[group]} · ${group}</div>`;
+    items.forEach(item => { html += buildNavItem(item.lesson, item.index); });
+  }
+  nav.innerHTML = html;
+
+  // Stats
+  document.getElementById('statCompleted').textContent = `${getCompletedCount()}/${LESSONS.length}`;
+  const avg = getAverageScore();
+  document.getElementById('statAvg').textContent = avg !== null ? `${avg}/5` : '-';
+  const best = getBestSingleScore();
+  document.getElementById('statBest').textContent = best !== null ? `${best}/5` : '-';
+
+  // Mobile tab
+  updateMobileNavActive();
+}
+
+// ===== RENDER LESSON =====
+function openLesson(id) {
+  currentLessonId = id;
+  currentQuestionIndex = 0;
+  currentAnswers = [];
+  updateSidebar();
+  renderLesson();
+  document.getElementById('mainContent').scrollTop = 0;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderLesson() {
+  const lesson = LESSONS.find(l => l.id === currentLessonId);
+  if (!lesson) { renderWelcome(); return; }
+
+  const p = getLessonProgress(lesson.id);
+  const levelClass = lesson.level;
+
+  let html = '';
+  // Header
+  html += `<div class="lesson-header">`;
+  html += `<span class="level-tag ${levelClass}">${lesson.level}</span>`;
+  html += `<h2>${lesson.title}</h2>`;
+  html += `<div class="en-title">${lesson.enTitle}</div>`;
+  html += `</div>`;
+
+  // Explanation
+  html += `<div class="explanation-card">`;
+  html += `<h3>📚 知识点</h3>`;
+  html += `<p class="summary">${lesson.summary}</p>`;
+  html += `<ul class="point-list">`;
+  lesson.points.forEach(p => { html += `<li>${p}</li>`; });
+  html += `</ul>`;
+  html += `<div class="example-block">`;
+  html += `<div class="example-label">例句</div>`;
+  lesson.examples.forEach(e => { html += `<p>${e}</p>`; });
+  html += `</div>`;
+  html += `</div>`;
+
+  // Quiz
+  if (currentQuestionIndex >= lesson.questions.length) {
+    // Show result
+    const totalCorrect = currentAnswers.filter(a => a.correct).length;
+    const total = lesson.questions.length;
+    let scoreClass = 'low';
+    if (totalCorrect === total) scoreClass = 'perfect';
+    else if (totalCorrect >= total * 0.8) scoreClass = 'good';
+    else if (totalCorrect >= total * 0.6) scoreClass = 'ok';
+
+    const msgs = {
+      5: '🏆 满分！太棒了！你对这个语法点掌握得非常好。',
+      4: '👍 很好！只错了一个，再复习一下错题就更完美了。',
+      3: '📖 不错，但还有提升空间。建议重新看看知识点再试一次。',
+      2: '📝 还需要多练习。仔细读一遍知识点，然后重做。',
+      1: '💪 别灰心！基础需要加固，认真复习后再来挑战。',
+      0: '🌱 万事开头难！回到知识点部分仔细学习，然后再试。',
+    };
+    const msg = msgs[totalCorrect] || '继续加油！';
+
+    html += `<div class="result-panel">`;
+    html += `<div class="big-score ${scoreClass}">${totalCorrect}/${total}</div>`;
+    html += `<div class="score-label">你的得分</div>`;
+    html += `<div class="result-msg">${msg}</div>`;
+    html += `<div style="display:flex;gap:10px;justify-content:center;">`;
+    html += `<button class="retry-btn" onclick="retryLesson()">🔄 重新挑战</button>`;
+    if (lesson.id < LESSONS.length) {
+      html += `<button class="retry-btn" style="background:var(--color-success)" onclick="openLesson(${lesson.id + 1})">下一课 →</button>`;
+    }
+    html += `</div></div>`;
+
+    // Save progress
+    updateLessonProgress(lesson.id, totalCorrect);
+  } else {
+    // Progress bar
+    html += `<div class="quiz-section">`;
+    html += `<div class="quiz-progress-bar">`;
+    for (let i = 0; i < lesson.questions.length; i++) {
+      let cls = '';
+      if (i < currentAnswers.length) {
+        cls = currentAnswers[i].correct ? 'correct' : 'wrong';
+      } else if (i === currentQuestionIndex) {
+        cls = 'current';
+      }
+      html += `<div class="quiz-dot ${cls}"></div>`;
+    }
+    html += `</div>`;
+
+    // Question
+    const q = lesson.questions[currentQuestionIndex];
+    html += `<div class="question-card">`;
+    html += `<div class="q-num">第 ${currentQuestionIndex + 1} 题 / 共 ${lesson.questions.length} 题</div>`;
+    html += `<div class="q-text">${q.q}</div>`;
+
+    if (q.type === 'choice') {
+      html += `<div class="options" id="optionsContainer">`;
+      const letters = ['A', 'B', 'C', 'D'];
+      q.options.forEach((opt, i) => {
+        html += `<button class="option-btn" onclick="selectChoice(${i})" data-idx="${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`;
+      });
+      html += `</div>`;
+    } else if (q.type === 'fill') {
+      html += `<div class="fill-input-wrap">`;
+      html += `<input type="text" class="fill-input" id="fillInput" placeholder="输入你的答案..." onkeydown="if(event.key==='Enter')submitFill()" autocomplete="off">`;
+      html += `<button class="submit-btn" onclick="submitFill()">确认</button>`;
+      html += `</div>`;
+    }
+
+    html += `<div class="feedback" id="feedback"></div>`;
+    html += `</div>`;
+    html += `</div>`;
+  }
+
+  document.getElementById('mainContent').innerHTML = html;
+
+  // Focus fill input if exists
+  setTimeout(() => {
+    const fi = document.getElementById('fillInput');
+    if (fi) fi.focus();
+  }, 100);
+}
+
+function selectChoice(idx) {
+  const lesson = LESSONS.find(l => l.id === currentLessonId);
+  if (!lesson) return;
+  const q = lesson.questions[currentQuestionIndex];
+  if (q.type !== 'choice') return;
+
+  const correctIdx = q.answer;
+  const isCorrect = idx === correctIdx;
+  currentAnswers.push({ answer: idx, correct: isCorrect });
+
+  // Update button styles
+  const btns = document.querySelectorAll('#optionsContainer .option-btn');
+  btns.forEach((b, i) => {
+    b.disabled = true;
+    if (i === correctIdx) b.classList.add('correct-choice');
+    if (i === idx && !isCorrect) b.classList.add('wrong-choice');
+    if (i === idx) b.classList.add('selected');
+  });
+
+  // Show feedback
+  showFeedback(isCorrect, q.options ? q.options[correctIdx] : '');
+
+  // Auto advance
+  setTimeout(() => { currentQuestionIndex++; renderLesson(); }, 1200);
+}
+
+function submitFill() {
+  const input = document.getElementById('fillInput');
+  if (!input) return;
+  const userAnswer = input.value.trim();
+  if (!userAnswer) return;
+
+  const lesson = LESSONS.find(l => l.id === currentLessonId);
+  if (!lesson) return;
+  const q = lesson.questions[currentQuestionIndex];
+
+  // Accept multiple correct answers (case insensitive, trim)
+  const correctAnswers = Array.isArray(q.answer) ? q.answer : [q.answer];
+  const isCorrect = correctAnswers.some(a => userAnswer.toLowerCase() === a.toLowerCase());
+  currentAnswers.push({ answer: userAnswer, correct: isCorrect });
+
+  // Style input
+  input.disabled = true;
+  input.classList.add(isCorrect ? 'correct-fill' : 'wrong-fill');
+  const submitBtn = document.querySelector('.submit-btn');
+  if (submitBtn) submitBtn.disabled = true;
+
+  if (!isCorrect) {
+    // Show correct answer in input
+    input.value = userAnswer + '  →  ' + correctAnswers[0];
+  }
+
+  showFeedback(isCorrect, correctAnswers[0]);
+
+  setTimeout(() => { currentQuestionIndex++; renderLesson(); }, 1500);
+}
+
+function showFeedback(isCorrect, correctAnswer) {
+  const fb = document.getElementById('feedback');
+  if (!fb) return;
+  fb.className = 'feedback show ' + (isCorrect ? 'correct' : 'wrong');
+  fb.textContent = isCorrect
+    ? '✓ 正确！'
+    : `✗ 不对。正确答案是：${correctAnswer}`;
+}
+
+function retryLesson() {
+  currentQuestionIndex = 0;
+  currentAnswers = [];
+  renderLesson();
+}
+
+function renderWelcome() {
+  const completed = getCompletedCount();
+  document.getElementById('mainContent').innerHTML = `
+    <div class="welcome">
+      <h2>👋 欢迎来到英语语法学习</h2>
+      <p>从零开始，15 课体系化掌握英语核心语法。每课包含知识点讲解和互动练习，进度自动保存。</p>
+      <p style="margin-top:12px;font-size:0.85rem;color:var(--color-text-muted)">已完成 ${completed}/15 课</p>
+      <button class="start-hint" onclick="openLesson(1)">开始第一课 →</button>
+    </div>
+  `;
+}
+
+// ===== MOBILE NAV =====
+function switchMobileTab(tab) {
+  if (tab === 0) {
+    // Learning tab - show current lesson
+    if (currentLessonId) {
+      openLesson(currentLessonId);
+    } else {
+      renderWelcome();
+    }
+  } else {
+    // Progress tab
+    renderMobileProgress();
+  }
+  updateMobileNavActive();
+}
+
+function updateMobileNavActive() {
+  document.querySelectorAll('.mobile-nav-btn').forEach((b, i) => {
+    b.classList.toggle('active', i === 0); // simplified
+  });
+}
+
+function renderMobileProgress() {
+  let html = '<div style="padding:20px 16px 100px">';
+  html += '<h2 style="font-size:1.3rem;font-weight:700;margin-bottom:16px">📊 学习进度</h2>';
+
+  const groups = { A1: [], A2: [], B1: [] };
+  LESSONS.forEach((l, i) => {
+    const group = ['A1','A2','B1'].includes(l.level) ? l.level : 'A2';
+    groups[group].push({ lesson: l, index: i });
+  });
+
+  for (const [group, items] of Object.entries(groups)) {
+    if (items.length === 0) continue;
+    const labels = { A1: '基础', A2: '进阶', B1: '中级' };
+    html += `<div style="margin-bottom:16px;font-size:0.75rem;font-weight:600;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.05em">${labels[group]} · ${group}</div>`;
+    items.forEach(({ lesson, index }) => {
+      const p = getLessonProgress(lesson.id);
+      html += `<div style="display:flex;align-items:center;gap:10px;padding:10px;margin-bottom:4px;background:var(--color-surface);border-radius:8px;border:1px solid var(--color-border);cursor:pointer" onclick="openLesson(${lesson.id})">
+        <span style="width:24px;height:24px;border-radius:6px;background:#f5f5f4;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700">${index+1}</span>
+        <span style="flex:1;font-size:0.85rem">${lesson.title}</span>
+        <span style="font-size:0.65rem;font-weight:700;padding:1px 6px;border-radius:999px;color:white;background:${lesson.level==='A1'?'var(--color-a1)':lesson.level==='A2'?'var(--color-a2)':'var(--color-b1)'}">${lesson.level}</span>
+        <span style="font-size:0.8rem;font-weight:600;min-width:24px;text-align:right">${p.completed ? p.bestScore+'/5' : '—'}</span>
+      </div>`;
+    });
+  }
+  html += '</div>';
+  document.getElementById('mainContent').innerHTML = html;
+}
+
+// ===== INIT =====
+function init() {
+  updateSidebar();
+  renderWelcome();
+}
+
+init();
+</script>
+</body>
+</html>
