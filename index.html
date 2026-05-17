@@ -490,6 +490,28 @@ body {
 @media (min-width: 769px) {
   .mobile-nav { display: none; }
 }
+
+/* Sync */
+.sync-section { padding: 12px 20px; border-top: 1px solid var(--color-border); }
+.sync-btn {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  width: 100%; padding: 8px 0;
+  border: 1px solid var(--color-border); border-radius: var(--radius-sm);
+  background: var(--color-surface); color: var(--color-text-secondary);
+  font-size: 0.78rem; font-family: var(--font-sans); cursor: pointer;
+  transition: all var(--transition); margin-bottom: 6px;
+}
+.sync-btn:hover { border-color: var(--color-accent); color: var(--color-accent); background: #fafaff; }
+.sync-btn.copied { border-color: var(--color-success); color: var(--color-success); background: var(--color-success-light); }
+.import-toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  background: var(--color-text); color: white; padding: 10px 20px;
+  border-radius: 999px; font-size: 0.85rem; font-family: var(--font-sans);
+  z-index: 100; animation: fadeIn 0.25s ease;
+  pointer-events: none;
+}
+.import-toast.success { background: var(--color-success); }
+.import-toast.error { background: var(--color-error); }
 </style>
 </head>
 <body>
@@ -513,6 +535,10 @@ body {
         <span class="stat-value" id="statBest">-</span>
         <span class="stat-label">最高分</span>
       </div>
+    </div>
+    <div class="sync-section">
+      <button class="sync-btn" onclick="exportProgress()" title="复制进度数据，粘贴到另一台设备">📤 导出进度</button>
+      <button class="sync-btn" onclick="importProgress()" title="从另一台设备粘贴进度数据">📥 导入进度</button>
     </div>
     <nav class="sidebar-nav" id="lessonNav"></nav>
   </aside>
@@ -1265,6 +1291,62 @@ function renderMobileProgress() {
 function init() {
   updateSidebar();
   renderWelcome();
+}
+
+function exportProgress() {
+  const data = JSON.stringify(progress, null, 0);
+  navigator.clipboard.writeText(data).then(() => {
+    const btn = document.querySelector('.sync-section .sync-btn:first-child');
+    btn.classList.add('copied');
+    btn.textContent = '✅ 已复制！粘贴到另一台设备';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = '📤 导出进度';
+    }, 2000);
+  }).catch(() => {
+    showToast('复制失败，请手动复制', 'error');
+  });
+}
+
+function importProgress() {
+  const input = prompt('请粘贴从另一台设备导出的进度数据：');
+  if (!input) return;
+  try {
+    const data = JSON.parse(input.trim());
+    if (typeof data !== 'object' || data === null) throw new Error('格式错误');
+    // Validate basic structure
+    for (const [key, val] of Object.entries(data)) {
+      if (!/^\d+$/.test(key)) continue;
+      if (!val || typeof val.completed !== 'boolean' || typeof val.bestScore !== 'number') {
+        throw new Error('数据格式不正确');
+      }
+    }
+    // Merge: keep higher bestScore for each lesson
+    for (const [key, val] of Object.entries(data)) {
+      const existing = progress[key];
+      if (existing) {
+        existing.completed = existing.completed || val.completed;
+        existing.bestScore = Math.max(existing.bestScore, val.bestScore || 0);
+        existing.score = Math.max(existing.score || 0, val.score || 0);
+      } else {
+        progress[key] = val;
+      }
+    }
+    saveProgress(progress);
+    updateSidebar();
+    if (currentLessonId) renderLesson(); else renderWelcome();
+    showToast('进度导入成功！已合并两边的最高分', 'success');
+  } catch (e) {
+    showToast('数据格式错误，请重新导出后再试', 'error');
+  }
+}
+
+function showToast(msg, type) {
+  const el = document.createElement('div');
+  el.className = 'import-toast ' + type;
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 2500);
 }
 
 init();
