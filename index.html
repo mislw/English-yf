@@ -3,722 +3,751 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>英语语法 — 从零开始</title>
+<title>考研英语 — 从零到上岸</title>
 <style>
-/* ===== Design Tokens ===== */
+/* ===== Tokens ===== */
 :root {
-  --bg: #f8f7f4;
-  --surface: #ffffff;
-  --surface-hover: #faf9f7;
-  --border: #e8e5e0;
-  --text: #1e1b18;
-  --text-2: #5c5752;
-  --text-3: #9c9690;
-  --brand: #e8630a;
-  --brand-light: #fff0e5;
-  --brand-bg: #fef9f5;
-  --green: #2d9d4a;
-  --green-light: #eaf7ee;
-  --red: #dc3b3b;
-  --red-light: #fef4f4;
-  --blue: #3b82f6;
-  --blue-light: #eff6ff;
-  --purple: #8b5cf6;
-  --purple-light: #f5f3ff;
-  --gold: #f59e0b;
-  --gold-light: #fffbeb;
-  --radius: 14px;
-  --radius-sm: 10px;
-  --radius-xs: 6px;
-  --shadow-card: 0 1px 3px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.03);
-  --shadow-hover: 0 2px 4px rgba(0,0,0,0.05), 0 4px 16px rgba(0,0,0,0.04);
-  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans SC', sans-serif;
-  --sidebar-w: 264px;
+  --bg:#f7f6f3; --surface:#fff; --surface2:#faf9f7; --border:#e6e3de;
+  --text:#1c1917; --t2:#595550; --t3:#969088;
+  --brand:#e8630a; --brand-l:#fff1e6; --brand-bg:#fefaf7;
+  --g:#22a63e; --gl:#eaf7ee; --r:#dc3b3b; --rl:#fef4f4;
+  --b:#3b82f6; --bl:#eff6ff; --p:#8b5cf6; --pl:#f5f3ff;
+  --gold:#f59e0b; --goldl:#fffbeb;
+  --rad:14px; --rads:10px; --radx:8px;
+  --shadow:0 1px 3px rgba(0,0,0,0.04),0 2px 8px rgba(0,0,0,0.03);
+  --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans SC',sans-serif;
 }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { font-size: 16px; }
-body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh; }
+/* ===== Top Tab Bar ===== */
+.topbar{
+  background:var(--surface);border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:30;overflow-x:auto;
+}
+.topbar-inner{display:flex;max-width:1100px;margin:0 auto;padding:0 16px;gap:0}
+.topbar .logo{
+  display:flex;align-items:center;gap:8px;padding:12px 16px 12px 0;
+  font-weight:750;font-size:0.95rem;white-space:nowrap;
+  border-right:1px solid var(--border);margin-right:4px;cursor:pointer;
+}
+.topbar .logo .l{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--brand),var(--gold));display:flex;align-items:center;justify-content:center;font-size:1rem;color:#fff}
+.tab-btn{
+  display:flex;align-items:center;gap:5px;padding:12px 14px;border:none;background:none;
+  font-size:0.82rem;font-family:var(--font);color:var(--t3);cursor:pointer;
+  white-space:nowrap;border-bottom:2.5px solid transparent;transition:all .15s;
+  font-weight:550;
+}
+.tab-btn:hover{color:var(--text);background:var(--surface2)}
+.tab-btn.active{color:var(--brand);border-bottom-color:var(--brand);font-weight:700}
+.tab-btn .tb-icon{font-size:1rem}
 
-/* ===== App Shell ===== */
-.app { display: flex; min-height: 100vh; }
+/* ===== Layout ===== */
+.main-wrap{max-width:1100px;margin:0 auto;padding:24px 20px 60px}
 
-/* ===== Sidebar ===== */
-.sidebar {
-  width: var(--sidebar-w); background: var(--surface);
-  border-right: 1px solid var(--border); display: flex; flex-direction: column;
-  position: fixed; top: 0; left: 0; bottom: 0; z-index: 10; overflow-y: auto;
+/* ===== Grammar Sidebar Layout ===== */
+.gr-layout{display:flex;gap:24px}
+.gr-side{width:240px;flex-shrink:0;position:sticky;top:60px;align-self:flex-start;max-height:calc(100vh - 80px);overflow-y:auto}
+.gr-side .gr-progress{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--rad);
+  padding:16px;margin-bottom:12px
 }
-.sidebar-brand { padding: 22px 20px 14px; }
-.sidebar-brand .logo {
-  width: 40px; height: 40px; border-radius: 12px;
-  background: linear-gradient(135deg, var(--brand), #f59e0b);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.2rem; color: white; margin-bottom: 8px;
+.gr-ring-row{display:flex;align-items:center;gap:12px}
+.gr-ring{position:relative;width:48px;height:48px;flex-shrink:0}
+.gr-ring svg{transform:rotate(-90deg)}
+.gr-ring .bg{fill:none;stroke:#ede8e2;stroke-width:5}
+.gr-ring .fill{fill:none;stroke:var(--brand);stroke-width:5;stroke-linecap:round;transition:stroke-dashoffset .6s}
+.gr-ring .in{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:0.82rem;font-weight:750}
+.gr-stats{font-size:0.75rem;color:var(--t3);line-height:1.6}
+.gr-stats b{color:var(--text)}
+.gr-streak{display:inline-flex;align-items:center;gap:3px;background:linear-gradient(135deg,#fef3c7,#fde68a);padding:2px 8px;border-radius:999px;font-size:0.68rem;font-weight:650;margin-top:2px}
+.gr-nav-list{display:flex;flex-direction:column;gap:1px}
+.gr-nav-label{font-size:0.64rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--t3);padding:12px 0 4px 4px}
+.gr-nav-item{
+  display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:var(--radx);
+  border:none;background:none;cursor:pointer;font-family:var(--font);font-size:0.8rem;color:var(--t2);
+  text-align:left;transition:all .15s
 }
-.sidebar-brand h1 { font-size: 1.1rem; font-weight: 750; letter-spacing: -0.01em; }
-.sidebar-brand .sub { font-size: 0.75rem; color: var(--text-3); }
+.gr-nav-item:hover{background:var(--surface2)}
+.gr-nav-item.active{background:var(--brand-l);color:var(--brand);font-weight:650}
+.gr-nav-item .n{width:20px;height:20px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:0.64rem;font-weight:700;background:#f0ece6;flex-shrink:0}
+.gr-nav-item.active .n{background:var(--brand);color:#fff}
+.gr-nav-item .lv{font-size:0.58rem;font-weight:700;padding:1px 6px;border-radius:999px;color:#fff;flex-shrink:0;margin-left:auto}
+.gr-nav-item .ck{font-size:0.65rem}
+.lv-A1{background:var(--g)} .lv-A2{background:var(--b)} .lv-B1{background:var(--p)} .lv-B2{background:var(--r)}
 
-.sidebar-progress { padding: 0 20px 16px; }
-.progress-ring-wrap { display: flex; align-items: center; gap: 14px; }
-.progress-ring {
-  position: relative; width: 52px; height: 52px; flex-shrink: 0;
-}
-.progress-ring svg { transform: rotate(-90deg); }
-.progress-ring .bg { fill: none; stroke: #f0ede8; stroke-width: 5; }
-.progress-ring .fill {
-  fill: none; stroke: var(--brand); stroke-width: 5; stroke-linecap: round;
-  transition: stroke-dashoffset 0.6s ease;
-}
-.progress-ring .inner {
-  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-  font-size: 0.9rem; font-weight: 750;
-}
-.progress-detail { display: flex; flex-direction: column; gap: 3px; }
-.progress-detail .pd-row { font-size: 0.78rem; color: var(--text-2); display: flex; gap: 4px; align-items: center; }
-.progress-detail .pd-row .val { font-weight: 650; color: var(--text); }
-.streak-badge {
-  display: inline-flex; align-items: center; gap: 4px;
-  background: linear-gradient(135deg, #fef3c7, #fde68a);
-  padding: 3px 10px; border-radius: 999px; font-size: 0.72rem; font-weight: 650;
-  margin-top: 2px; width: fit-content;
-}
+/* ===== Cards ===== */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rad);padding:24px;box-shadow:var(--shadow);margin-bottom:16px}
+.card h3{font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--brand);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.section-title{font-size:1.7rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:4px}
+.section-sub{font-size:0.88rem;color:var(--t3);margin-bottom:20px}
 
-.sidebar-nav { flex: 1; overflow-y: auto; padding: 4px 0; }
-.nav-group { margin-bottom: 2px; }
-.nav-group-label {
-  font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
-  color: var(--text-3); padding: 14px 20px 6px;
-}
-.nav-item {
-  display: flex; align-items: center; gap: 10px; padding: 9px 16px; margin: 1px 8px;
-  cursor: pointer; transition: all 0.15s ease; border: none; background: none;
-  width: calc(100% - 16px); text-align: left; font-size: 0.82rem; color: var(--text-2);
-  font-family: var(--font); border-radius: var(--radius-xs);
-}
-.nav-item:hover { background: var(--surface-hover); }
-.nav-item.active { background: var(--brand-light); color: var(--brand); font-weight: 650; }
-.nav-item .num {
-  width: 22px; height: 22px; border-radius: 6px; display: flex; align-items: center;
-  justify-content: center; font-size: 0.68rem; font-weight: 700; background: #f5f3f0; flex-shrink: 0;
-}
-.nav-item.active .num { background: var(--brand); color: white; }
-.nav-item .lvl {
-  font-size: 0.6rem; font-weight: 700; padding: 1.5px 7px; border-radius: 999px;
-  color: white; flex-shrink: 0; margin-left: auto;
-}
-.nav-item .check { margin-left: 2px; font-size: 0.7rem; flex-shrink: 0; }
-.nav-item .check.done { color: var(--green); }
-.nav-item .check.undone { color: transparent; }
-.lvl-A1 { background: var(--green); }
-.lvl-A2 { background: var(--blue); }
-.lvl-B1 { background: var(--purple); }
+/* ===== Explanation ===== */
+.point-row{display:flex;gap:10px;padding:11px 14px;background:var(--surface2);border-radius:var(--radx);margin-bottom:6px;font-size:0.85rem;line-height:1.65}
+.point-row:hover{background:var(--brand-l)}
+.point-row .pi{flex-shrink:0;font-size:1rem;width:22px;text-align:center}
+.point-row strong{color:var(--brand)}
+.ex-box{margin-top:14px;padding:14px 16px;background:linear-gradient(135deg,#fefaf7,#fff7ed);border-radius:var(--rads);border-left:4px solid var(--brand)}
+.ex-box .exl{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--brand);margin-bottom:8px}
+.ex-box p{font-size:0.86rem;margin-bottom:4px;line-height:1.7}
+.ex-box .en{color:var(--brand);font-weight:550}
 
-.sidebar-sync { padding: 10px 16px; border-top: 1px solid var(--border); display: flex; gap: 6px; }
-.sidebar-sync button {
-  flex: 1; padding: 7px 0; border: 1px solid var(--border); border-radius: var(--radius-xs);
-  background: var(--surface); color: var(--text-3); font-size: 0.72rem; cursor: pointer;
-  font-family: var(--font); transition: all 0.15s ease; display: flex; align-items: center; justify-content: center; gap: 4px;
+/* ===== Buttons ===== */
+.btn{
+  display:inline-flex;align-items:center;gap:6px;padding:10px 22px;border-radius:999px;
+  font-size:0.88rem;font-weight:650;cursor:pointer;font-family:var(--font);border:none;transition:all .15s
 }
-.sidebar-sync button:hover { border-color: var(--brand); color: var(--brand); }
-
-/* ===== Main Content ===== */
-.main { margin-left: var(--sidebar-w); flex: 1; padding: 36px 44px; max-width: 820px; }
-
-/* ===== Welcome ===== */
-.welcome { text-align: center; padding: 80px 24px; }
-.welcome .wl-icon { font-size: 4rem; margin-bottom: 16px; }
-.welcome h2 { font-size: 2rem; font-weight: 800; letter-spacing: -0.02em; background: linear-gradient(135deg, var(--brand), #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-.welcome .wl-desc { color: var(--text-2); margin-top: 10px; max-width: 440px; margin-inline: auto; font-size: 0.95rem; line-height: 1.7; }
-.welcome .wl-path { display: flex; justify-content: center; gap: 6px; margin: 28px 0; flex-wrap: wrap; }
-.welcome .wl-path .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border); }
-.welcome .wl-path .dot.done { background: var(--brand); }
-.welcome .wl-start {
-  display: inline-flex; align-items: center; gap: 8px; padding: 14px 36px;
-  background: linear-gradient(135deg, var(--brand), #f56c0a); color: white;
-  border: none; border-radius: 999px; font-size: 1rem; font-weight: 700; cursor: pointer;
-  font-family: var(--font); box-shadow: 0 4px 16px rgba(232,99,10,0.3);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-.welcome .wl-start:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(232,99,10,0.4); }
-
-/* ===== Lesson Header ===== */
-.lsn-header { margin-bottom: 28px; }
-.lsn-header .lvl-tag {
-  display: inline-flex; align-items: center; gap: 6px; padding: 5px 14px;
-  border-radius: 999px; font-size: 0.75rem; font-weight: 700; color: white; margin-bottom: 12px;
-}
-.lsn-header h2 { font-size: 1.9rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; }
-.lsn-header .en { font-size: 0.9rem; color: var(--text-3); margin-top: 4px; }
-
-/* ===== Topic Icon Row ===== */
-.topic-icon-row {
-  display: flex; gap: 10px; margin-bottom: 24px;
-}
-.topic-chip {
-  display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px;
-  background: var(--surface); border: 1px solid var(--border); border-radius: 999px;
-  font-size: 0.78rem; color: var(--text-2);
-}
-
-/* ===== Explanation Card ===== */
-.exp-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 26px; margin-bottom: 24px;
-  box-shadow: var(--shadow-card);
-}
-.exp-card h3 {
-  font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
-  color: var(--brand); margin-bottom: 14px; display: flex; align-items: center; gap: 6px;
-}
-.exp-card .summary { font-size: 0.92rem; color: var(--text-2); line-height: 1.75; margin-bottom: 18px; }
-.point-grid { display: grid; gap: 8px; }
-.point-item {
-  display: flex; gap: 10px; padding: 12px 14px; background: #fbfaf8;
-  border-radius: var(--radius-xs); font-size: 0.86rem; line-height: 1.65;
-  transition: background 0.15s;
-}
-.point-item:hover { background: var(--brand-light); }
-.point-item .pi-icon { flex-shrink: 0; font-size: 1rem; width: 28px; text-align: center; }
-.point-item strong { color: var(--brand); }
-.examples-box {
-  margin-top: 16px; padding: 16px 18px; background: linear-gradient(135deg, #fef9f5, #fff7ed);
-  border-radius: var(--radius-sm); border-left: 4px solid var(--brand);
-}
-.examples-box .ex-label {
-  font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
-  color: var(--brand); margin-bottom: 10px;
-}
-.examples-box p { font-size: 0.88rem; color: var(--text); margin-bottom: 5px; line-height: 1.7; }
-.examples-box .en { color: var(--brand); font-weight: 550; }
+.btn-primary{background:var(--brand);color:#fff;box-shadow:0 4px 14px rgba(232,99,10,.28)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(232,99,10,.38)}
+.btn-ghost{background:var(--surface2);color:var(--text)}
+.btn-ghost:hover{background:var(--border)}
+.btn-sm{padding:7px 16px;font-size:0.8rem}
 
 /* ===== Quiz ===== */
-.quiz-section { margin-top: 8px; }
-.quiz-header {
-  display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px;
+.q-dots{display:flex;gap:5px;margin-bottom:16px}
+.q-dot{width:28px;height:4px;border-radius:2px;background:var(--border);transition:all .2s}
+.q-dot.done{background:var(--g)} .q-dot.wrong{background:var(--r)} .q-dot.cur{background:var(--t2)}
+.q-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rad);padding:24px;box-shadow:var(--shadow);animation:fadeUp .3s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.q-card .qt{display:inline-block;padding:3px 10px;background:var(--brand-l);color:var(--brand);border-radius:999px;font-size:0.68rem;font-weight:700;margin-bottom:10px}
+.q-card .qtx{font-size:1.05rem;font-weight:550;margin-bottom:18px;line-height:1.7}
+.opts{display:flex;flex-direction:column;gap:7px}
+.opt{
+  display:flex;align-items:center;gap:10px;padding:13px 16px;border:2px solid var(--border);
+  border-radius:var(--rads);background:var(--surface);cursor:pointer;font-size:0.9rem;
+  font-family:var(--font);transition:all .15s;text-align:left
 }
-.quiz-counter { font-size: 0.8rem; color: var(--text-3); font-weight: 600; }
-.quiz-dots { display: flex; gap: 5px; }
-.quiz-dot {
-  width: 28px; height: 4px; border-radius: 2px; background: var(--border); transition: all 0.2s ease;
+.opt:hover{border-color:#d3ccc3;background:#fdfdfc}
+.opt.correct{border-color:var(--g);background:var(--gl)}
+.opt.wrong{border-color:var(--r);background:var(--rl)}
+.opt:disabled{cursor:default}
+.opt .lt{width:28px;height:28px;border-radius:50%;background:#f0ece6;display:flex;align-items:center;justify-content:center;font-size:0.76rem;font-weight:700;color:var(--t2);flex-shrink:0}
+.opt.correct .lt{background:var(--g);color:#fff}
+.opt.wrong .lt{background:var(--r);color:#fff}
+.fill-r{display:flex;gap:8px;align-items:center}
+.fill-in{
+  flex:1;padding:11px 14px;border:2px solid var(--border);border-radius:var(--rads);
+  font-size:0.92rem;font-family:var(--font);outline:none;transition:border-color .15s
 }
-.quiz-dot.done { background: var(--green); }
-.quiz-dot.wrong { background: var(--red); }
-.quiz-dot.cur { background: var(--text-2); }
-
-.q-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 26px; box-shadow: var(--shadow-card);
-  animation: slideUp 0.3s ease;
-}
-@keyframes slideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-.q-card .q-type {
-  display: inline-block; padding: 3px 10px; background: var(--brand-light);
-  color: var(--brand); border-radius: 999px; font-size: 0.7rem; font-weight: 700;
-  text-transform: uppercase; margin-bottom: 10px;
-}
-.q-card .q-text { font-size: 1.1rem; font-weight: 550; margin-bottom: 20px; line-height: 1.7; }
-.q-card .q-text .blank-word {
-  display: inline-block; min-width: 60px; border-bottom: 2.5px dashed var(--brand);
-  color: var(--brand); padding: 0 4px; font-weight: 650;
-}
-
-.options { display: flex; flex-direction: column; gap: 8px; }
-.opt {
-  display: flex; align-items: center; gap: 12px; padding: 14px 18px;
-  border: 2px solid var(--border); border-radius: var(--radius-sm); background: var(--surface);
-  cursor: pointer; font-size: 0.92rem; font-family: var(--font); transition: all 0.15s ease;
-  text-align: left;
-}
-.opt:hover { border-color: #d0c9c0; background: #fdfdfc; }
-.opt.sel { border-color: var(--brand); background: var(--brand-light); }
-.opt.correct { border-color: var(--green); background: var(--green-light); }
-.opt.wrong { border-color: var(--red); background: var(--red-light); }
-.opt:disabled { cursor: default; }
-.opt .letter {
-  width: 30px; height: 30px; border-radius: 50%; background: #f5f3f0;
-  display: flex; align-items: center; justify-content: center; font-size: 0.8rem;
-  font-weight: 700; color: var(--text-2); flex-shrink: 0;
-}
-.opt.correct .letter { background: var(--green); color: white; }
-.opt.wrong .letter { background: var(--red); color: white; }
-
-.fill-row { display: flex; gap: 10px; align-items: center; }
-.fill-input {
-  flex: 1; padding: 12px 16px; border: 2px solid var(--border); border-radius: var(--radius-sm);
-  font-size: 0.95rem; font-family: var(--font); outline: none; transition: border-color 0.15s;
-  background: var(--surface);
-}
-.fill-input:focus { border-color: var(--brand); }
-.fill-input.correct { border-color: var(--green); background: var(--green-light); }
-.fill-input.wrong { border-color: var(--red); background: var(--red-light); }
-.fill-input:disabled { opacity: 0.9; }
-.btn-submit {
-  padding: 12px 28px; background: var(--brand); color: white; border: none;
-  border-radius: var(--radius-xs); font-size: 0.9rem; font-weight: 700; cursor: pointer;
-  font-family: var(--font); transition: opacity 0.15s; white-space: nowrap;
-}
-.btn-submit:hover { opacity: 0.9; }
-.btn-submit:disabled { opacity: 0.4; cursor: default; }
-
-.fb {
-  margin-top: 14px; padding: 10px 16px; border-radius: var(--radius-xs); font-size: 0.85rem;
-  display: none; font-weight: 550; animation: slideUp 0.2s ease;
-}
-.fb.show { display: block; }
-.fb.ok { background: var(--green-light); color: #166534; }
-.fb.no { background: var(--red-light); color: #991b1b; }
+.fill-in:focus{border-color:var(--brand)}
+.fill-in.good{border-color:var(--g);background:var(--gl)}
+.fill-in.bad{border-color:var(--r);background:var(--rl)}
+.fill-in:disabled{opacity:.9}
+.fb-toast{margin-top:12px;padding:10px 14px;border-radius:var(--radx);font-size:0.84rem;display:none;font-weight:550;animation:fadeUp .2s}
+.fb-toast.show{display:block}
+.fb-toast.ok{background:var(--gl);color:#166534}
+.fb-toast.no{background:var(--rl);color:#991b1b}
 
 /* ===== Result ===== */
-.result {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 40px 32px; text-align: center;
-  box-shadow: var(--shadow-card); animation: popIn 0.4s cubic-bezier(0.16,1,0.3,1);
+.result{text-align:center;padding:36px 20px;animation:popIn .4s cubic-bezier(.16,1,.3,1)}
+@keyframes popIn{from{opacity:0;transform:scale(.93)}to{opacity:1;transform:scale(1)}}
+.result .ri{font-size:3rem;margin-bottom:8px}
+.result .rs{font-size:4rem;font-weight:850;letter-spacing:-.03em;line-height:1}
+.rs.p{color:var(--g)} .rs.g{color:var(--brand)} .rs.o{color:var(--gold)} .rs.l{color:var(--r)}
+.result .rlbl{font-size:0.88rem;color:var(--t3);margin:4px 0 10px}
+.result .rm{font-size:0.92rem;font-weight:550;color:var(--t2);margin-bottom:20px}
+.result .ra{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+/* ===== Vocab Flashcard ===== */
+.flashcard{
+  perspective:800px;width:100%;max-width:400px;margin:0 auto;height:220px;cursor:pointer
 }
-@keyframes popIn { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); } }
-.result .r-icon { font-size: 3.5rem; margin-bottom: 10px; }
-.result .r-score { font-size: 4.5rem; font-weight: 850; letter-spacing: -0.03em; line-height: 1; }
-.r-score.p { color: var(--green); }
-.r-score.g { color: var(--brand); }
-.r-score.o { color: var(--gold); }
-.r-score.l { color: var(--red); }
-.result .r-label { font-size: 0.9rem; color: var(--text-3); margin: 6px 0 14px; }
-.result .r-msg { font-size: 0.95rem; font-weight: 550; margin-bottom: 24px; color: var(--text-2); }
-.result .r-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-.btn-retry, .btn-next {
-  display: inline-flex; align-items: center; gap: 6px; padding: 12px 26px;
-  border-radius: 999px; font-size: 0.9rem; font-weight: 650; cursor: pointer;
-  font-family: var(--font); border: none; transition: transform 0.15s;
+.flashcard .fc-inner{
+  position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d
 }
-.btn-retry { background: #f5f3f0; color: var(--text); }
-.btn-retry:hover { transform: translateY(-1px); }
-.btn-next { background: var(--brand); color: white; box-shadow: 0 4px 12px rgba(232,99,10,0.3); }
-.btn-next:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(232,99,10,0.4); }
+.flashcard.flipped .fc-inner{transform:rotateY(180deg)}
+.flashcard .fc-front,.flashcard .fc-back{
+  position:absolute;inset:0;backface-visibility:hidden;border-radius:var(--rad);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:24px;background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow)
+}
+.flashcard .fc-back{transform:rotateY(180deg);background:linear-gradient(135deg,#fefaf7,#fff7ed);border-color:var(--brand)}
+.flashcard .fc-word{font-size:2.2rem;font-weight:800;letter-spacing:-.01em}
+.flashcard .fc-pos{font-size:0.8rem;color:var(--t3);margin-top:4px}
+.flashcard .fc-hint{font-size:0.75rem;color:var(--t3);margin-top:16px}
+.flashcard .fc-meaning{font-size:1.3rem;font-weight:650;color:var(--brand)}
+.flashcard .fc-example{font-size:0.9rem;color:var(--t2);margin-top:10px;text-align:center;line-height:1.5}
+
+/* ===== Long Sentence ===== */
+.ls-block{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--rad);
+  padding:20px;margin-bottom:12px;position:relative;cursor:pointer;transition:all .2s
+}
+.ls-block:hover{box-shadow:var(--shadow)}
+.ls-block .ls-sentence{font-size:1.1rem;font-weight:550;line-height:1.8;margin-bottom:8px}
+.ls-block .ls-source{font-size:0.72rem;color:var(--t3);margin-bottom:6px}
+.ls-block .ls-analysis{display:none;margin-top:12px;padding:14px;background:var(--surface2);border-radius:var(--rads);font-size:0.84rem;line-height:1.8}
+.ls-block.open .ls-analysis{display:block}
+.ls-analysis .hl-main{background:#e8f5e9;padding:1px 4px;border-radius:3px;font-weight:550}
+.ls-analysis .hl-sub{background:#fff3e0;padding:1px 4px;border-radius:3px}
+.ls-analysis .hl-clue{background:#e3f2fd;padding:1px 4px;border-radius:3px}
+.ls-analysis b{color:var(--brand)}
+
+/* ===== Cloze ===== */
+.cloze-passage{font-size:0.95rem;line-height:2.2;margin-bottom:18px}
+.cloze-blank{display:inline-block}
+.cloze-blank select{
+  padding:3px 8px;border:2px solid var(--brand);border-radius:4px;
+  font-size:0.88rem;font-family:var(--font);background:var(--brand-l);cursor:pointer
+}
+.cloze-blank.answered select{pointer-events:none}
+.cloze-blank.correct select{border-color:var(--g);background:var(--gl)}
+.cloze-blank.wrong select{border-color:var(--r);background:var(--rl)}
+
+/* ===== Translation ===== */
+.trans-en{
+  font-size:1.1rem;font-weight:550;padding:16px;background:var(--surface2);
+  border-radius:var(--rads);margin-bottom:14px;line-height:1.8;border-left:4px solid var(--brand)
+}
+.trans-input{
+  width:100%;min-height:100px;padding:14px;border:2px solid var(--border);
+  border-radius:var(--rads);font-size:0.92rem;font-family:var(--font);resize:vertical;outline:none
+}
+.trans-input:focus{border-color:var(--brand)}
+.trans-ref{display:none;margin-top:12px;padding:14px;background:var(--gl);border-radius:var(--rads);font-size:0.9rem;line-height:1.7}
+.trans-ref.show{display:block}
+
+/* ===== Reading ===== */
+.reading-passage{font-size:0.92rem;line-height:1.9;padding:18px;background:var(--surface2);border-radius:var(--rads);margin-bottom:20px}
+.reading-passage p{margin-bottom:12px}
+
+/* ===== Sync bar ===== */
+.sync-bar{display:flex;gap:8px;margin-top:10px}
+.sync-bar button{
+  flex:1;padding:6px 0;border:1px solid var(--border);border-radius:6px;
+  background:var(--surface);color:var(--t3);font-size:0.72rem;cursor:pointer;
+  font-family:var(--font);transition:all .15s
+}
+.sync-bar button:hover{border-color:var(--brand);color:var(--brand)}
 
 /* ===== Confetti ===== */
-.confetti-wrap { position: fixed; inset: 0; pointer-events: none; z-index: 100; }
-.confetti-piece {
-  position: absolute; width: 10px; height: 10px; border-radius: 3px;
-  animation: confettiFall 1.5s ease-out forwards;
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:200}
+.confetti .cp{
+  position:absolute;width:8px;height:8px;border-radius:3px;
+  animation:cf 1.6s ease-out forwards
 }
-@keyframes confettiFall {
-  0% { transform: translateY(-40px) rotate(0deg); opacity: 1; }
-  100% { transform: translateY(105vh) rotate(720deg); opacity: 0; }
-}
+@keyframes cf{0%{transform:translateY(-30px) rotate(0);opacity:1}100%{transform:translateY(105vh) rotate(720deg);opacity:0}}
 
 /* ===== Toast ===== */
-.toast {
-  position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
-  background: #1e1b18; color: white; padding: 12px 24px; border-radius: 999px;
-  font-size: 0.85rem; font-family: var(--font); z-index: 110;
-  animation: slideUp 0.25s ease; pointer-events: none;
+.toast{
+  position:fixed;bottom:28px;left:50%;transform:translateX(-50%);z-index:210;
+  padding:11px 22px;border-radius:999px;font-size:0.84rem;font-family:var(--font);
+  color:#fff;animation:fadeUp .25s;pointer-events:none
 }
-.toast.good { background: var(--green); }
-.toast.bad { background: var(--red); }
+.toast.good{background:var(--g)} .toast.bad{background:var(--r)}
 
-/* ===== Mobile Bottom Nav ===== */
-.mob-nav {
-  display: none; position: fixed; bottom: 0; left: 0; right: 0;
-  background: var(--surface); border-top: 1px solid var(--border);
-  z-index: 20; padding: 6px 0 env(safe-area-inset-bottom, 6px);
-}
-.mob-nav-inner { display: flex; justify-content: space-around; }
-.mob-nav-btn {
-  display: flex; flex-direction: column; align-items: center; gap: 2px;
-  padding: 6px 16px; border: none; background: none; color: var(--text-3);
-  font-size: 0.62rem; cursor: pointer; font-family: var(--font);
-}
-.mob-nav-btn.active { color: var(--brand); }
-.mob-nav-btn svg { width: 22px; height: 22px; }
+/* ===== Section visible/hidden ===== */
+.section{display:none}
+.section.active{display:block}
 
-/* Mobile */
-@media (max-width: 768px) {
-  .sidebar { display: none; }
-  .main { margin-left: 0; padding: 18px 14px 100px; max-width: 100%; }
-  .mob-nav { display: block; }
-  .lsn-header h2 { font-size: 1.45rem; }
-  .exp-card, .q-card { padding: 18px; }
-  .point-item { font-size: 0.82rem; }
-  .welcome { padding: 48px 16px; }
-  .welcome h2 { font-size: 1.5rem; }
-  .result { padding: 28px 18px; }
-  .result .r-score { font-size: 3.5rem; }
+/* ===== Welcome in each section ===== */
+.welcome{text-align:center;padding:60px 20px}
+.welcome .wi{font-size:3.5rem;margin-bottom:12px}
+.welcome h2{font-size:1.6rem;font-weight:800;letter-spacing:-.02em}
+.welcome p{color:var(--t2);margin-top:8px;max-width:480px;margin-inline:auto;font-size:0.9rem;line-height:1.7}
+
+/* ===== Mobile ===== */
+@media(max-width:768px){
+  .gr-layout{flex-direction:column}
+  .gr-side{width:100%;position:static;max-height:none;display:flex;overflow-x:auto;gap:6px;padding-bottom:4px}
+  .gr-side .gr-progress{display:none}
+  .gr-nav-list{flex-direction:row;flex-wrap:nowrap;gap:4px}
+  .gr-nav-label{display:none}
+  .gr-nav-item{white-space:nowrap;font-size:0.74rem;padding:7px 10px}
+  .gr-nav-item .lv{display:none}
+  .topbar-inner{padding:0 8px}
+  .tab-btn{padding:10px 10px;font-size:0.74rem}
+  .tab-btn .tb-icon{font-size:0.9rem}
+  .main-wrap{padding:16px 12px 40px}
+  .section-title{font-size:1.4rem}
+  .flashcard{height:180px}
+  .flashcard .fc-word{font-size:1.6rem}
+  .result .rs{font-size:3rem}
+  .card{padding:16px}
+  .q-card{padding:16px}
 }
-@media (min-width: 769px) { .mob-nav { display: none; } }
 </style>
 </head>
 <body>
-<div class="app">
-  <!-- Sidebar -->
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-brand">
-      <div class="logo">📖</div>
-      <h1>英语语法</h1>
-      <div class="sub">从零开始 · 闯关学习</div>
-    </div>
-    <div class="sidebar-progress">
-      <div class="progress-ring-wrap">
-        <div class="progress-ring">
-          <svg width="52" height="52" viewBox="0 0 52 52"><circle class="bg" cx="26" cy="26" r="23"/><circle class="fill" id="progressCircle" cx="26" cy="26" r="23" stroke-dasharray="144.51" stroke-dashoffset="144.51"/></svg>
-          <div class="inner" id="progressPercent">0%</div>
-        </div>
-        <div class="progress-detail">
-          <div class="pd-row">🏆 <span class="val" id="pdCompleted">0</span>/15 课</div>
-          <div class="pd-row">⭐ 平均 <span class="val" id="pdAvg">-</span></div>
-          <div class="streak-badge" id="streakBadge" style="display:none">🔥 连击 x1</div>
-        </div>
-      </div>
-    </div>
-    <nav class="sidebar-nav" id="lessonNav"></nav>
-    <div class="sidebar-sync">
-      <button onclick="exportProgress()">📤 导出</button>
-      <button onclick="importProgress()">📥 导入</button>
-    </div>
-  </aside>
 
-  <!-- Main -->
-  <main class="main" id="mainContent"></main>
+<!-- ===== Top Bar ===== -->
+<nav class="topbar"><div class="topbar-inner">
+  <span class="logo" onclick="switchTab('grammar')"><span class="l">📖</span>考研英语</span>
+  <button class="tab-btn active" onclick="switchTab('grammar')" data-tab="grammar"><span class="tb-icon">📝</span>语法</button>
+  <button class="tab-btn" onclick="switchTab('vocab')" data-tab="vocab"><span class="tb-icon">📚</span>词汇</button>
+  <button class="tab-btn" onclick="switchTab('longsent')" data-tab="longsent"><span class="tb-icon">🔬</span>长难句</button>
+  <button class="tab-btn" onclick="switchTab('cloze')" data-tab="cloze"><span class="tb-icon">✂️</span>完形</button>
+  <button class="tab-btn" onclick="switchTab('trans')" data-tab="trans"><span class="tb-icon">🌐</span>翻译</button>
+  <button class="tab-btn" onclick="switchTab('reading')" data-tab="reading"><span class="tb-icon">📰</span>阅读</button>
+</div></nav>
 
-  <!-- Mobile Nav -->
-  <nav class="mob-nav">
-    <div class="mob-nav-inner">
-      <button class="mob-nav-btn active" onclick="switchMob(0)" id="mobTab0">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-        学习
-      </button>
-      <button class="mob-nav-btn" onclick="switchMob(1)" id="mobTab1">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-        进度
-      </button>
-    </div>
-  </nav>
-</div>
+<div class="main-wrap" id="mainWrap"></div>
 
 <script>
-// ===== LESSON DATA =====
-const TOPIC_ICONS = ['📝','👤','🔗','⏰','🏃','⏮','🔮','✅','🎨','📍','🔑','🔀','🔄','🔗','🏁'];
-const TOPIC_TAGS = {
-  1:['可数/不可数','a/an/the'],2:['主格/宾格','物主代词'],3:['am/is/are','否定/疑问'],
-  4:['三单+s','do/does'],5:['be+v-ing','正在发生'],6:['动词过去式','did/didn\'t'],
-  7:['will','be going to'],8:['have/has done','since/for'],9:['-ly副词','比较级/最高级'],
-  10:['at/on/in','时间/地点'],11:['can/must/should','情态动词+原形'],12:['if条件','真实/虚拟'],
-  13:['be+过去分词','by+执行者'],14:['who/which/that','where/whose'],15:['综合','A1-B1']
-};
+// ===== STATE =====
+const SK = 'eng_exam_prog_v2';
+let prog = (()=>{try{return JSON.parse(localStorage.getItem(SK))||{}}catch{return{}}})();
+function save(){localStorage.setItem(SK,JSON.stringify(prog))}
+function gp(k,def){const v=prog[k];return v!==undefined?v:def}
+let streak = parseInt(localStorage.getItem('eng_exam_streak')||'0');
 
-const LESSONS = [
-{id:1,title:'名词与冠词',enTitle:'Nouns & Articles',level:'A1',summary:'名词表示人、事物、地点或抽象概念。英语中名词前常需要加冠词 a、an 或 the，中文里没有这个习惯，需要特别注意。',points:['<strong>可数名词</strong>有单复数：apple → apples，box → boxes','<strong>不可数名词</strong>没有复数：water, rice, information','<strong>a/an</strong> 用于泛指单数可数名词：a cat, an apple','<strong>the</strong> 用于特指：the sun, the book on the table','复数/不可数名词泛指时<strong>不加冠词</strong>：I like music.'],examples:['I saw <span class="en">a dog</span> in the park. 在公园看到一只狗。','She ate <span class="en">an orange</span>. 她吃了一个橙子。','<span class="en">The dog</span> is friendly. 那只狗很友好。','<span class="en">Water</span> is important. 水很重要。'],questions:[{type:'choice',q:'I need ___ umbrella.',options:['a','an','the','(不加)'],answer:1},{type:'choice',q:'___ sun rises in the east.',options:['A','An','The','(不加)'],answer:2},{type:'fill',q:'She has two ___ (cat).',answer:'cats'},{type:'choice',q:'___ milk is good for health.',options:['A','An','The','(不加)'],answer:3},{type:'fill',q:'I bought ___ book yesterday. (一本)',answer:'a'}]},
-{id:2,title:'人称代词',enTitle:'Personal Pronouns',level:'A1',summary:'人称代词代替人或事物的名称。分为主格（做主语）、宾格（做宾语）、物主代词（表示"谁的"）。',points:['<strong>主格</strong>（主语）：I, you, he, she, it, we, they','<strong>宾格</strong>（宾语）：me, you, him, her, it, us, them','<strong>物主代词</strong>：my, your, his, her, its, our, their','he/him/his 指男性，she/her 指女性，<strong>it/its</strong> 指事物','英语<strong>必须有主语</strong>："下雨了" → "It is raining."'],examples:['<span class="en">He</span> is a teacher. 他是老师。','I like <span class="en">her</span>. 我喜欢她。','This is <span class="en">my</span> book. 这是我的书。','<span class="en">It</span> is cold today. 今天很冷。'],questions:[{type:'choice',q:'___ is my best friend.',options:['Her','She','Hers','Herself'],answer:1},{type:'fill',q:'Please give ___ the book. (我，宾格)',answer:'me'},{type:'choice',q:'This is not your pen. It\'s ___.',options:['I','me','my','mine'],answer:3},{type:'fill',q:'___ are students. (我们)',answer:'We'},{type:'choice',q:'Look at that dog! ___ tail is long.',options:['It','Its','It\'s','His'],answer:1}]},
-{id:3,title:'Be 动词',enTitle:'Verb "to be"',level:'A1',summary:'be 动词是英语中最基础的动词，表示"是、在"。根据主语变化：am、is、are。',points:['<strong>I → am</strong>：I am a student.','<strong>he/she/it → is</strong>：She is happy.','<strong>we/you/they → are</strong>：We are friends.','否定：am not / <strong>isn\'t</strong> / <strong>aren\'t</strong>','疑问：把 be 动词提前：<strong>Is</strong> he a doctor?'],examples:['<span class="en">I am</span> from China. 我来自中国。','<span class="en">She is</span> a doctor. 她是医生。','<span class="en">They are</span> happy. 他们很开心。','<span class="en">Is it</span> cold? 冷吗？'],questions:[{type:'fill',q:'I ___ a student. (be)',answer:'am'},{type:'choice',q:'She ___ very tall.',options:['am','is','are','be'],answer:1},{type:'fill',q:'They ___ not here. (缩写)',answer:"aren't"},{type:'choice',q:'___ you a teacher?',options:['Am','Is','Are','Be'],answer:2},{type:'fill',q:'He ___ from Japan. (be)',answer:'is'}]},
-{id:4,title:'一般现在时',enTitle:'Present Simple',level:'A1',summary:'表示经常性、习惯性的动作或普遍真理。',points:['<strong>I/You/We/They + 动词原形</strong>','<strong>He/She/It + 动词+s/es</strong>','否定：don\'t / <strong>doesn\'t</strong> + 原形','疑问：<strong>Do/Does</strong> 提前','客观事实：The earth goes around the sun.'],examples:['I <span class="en">get up</span> at 7:00 every day.','She <span class="en">works</span> in a hospital.','He <span class="en">doesn\'t eat</span> meat.','<span class="en">Do</span> you <span class="en">like</span> music?'],questions:[{type:'fill',q:'She ___ (play) piano every evening.',answer:'plays'},{type:'choice',q:'He ___ to school by bus.',options:['go','gos','goes','going'],answer:2},{type:'fill',q:'They ___ (not like) spicy food.',answer:"don't like"},{type:'choice',q:'___ she know the answer?',options:['Do','Does','Is','Are'],answer:1},{type:'fill',q:'The sun ___ (rise) in the east.',answer:'rises'}]},
-{id:5,title:'现在进行时',enTitle:'Present Continuous',level:'A2',summary:'表示此刻正在进行的动作。结构：am/is/are + 动词-ing。',points:['结构：<strong>am/is/are + 动词-ing</strong>','I am reading. / She is cooking.','否定：am not / isn\'t / aren\'t + 动词-ing','疑问：Is/Are + 主语 + 动词-ing？','<strong>vs 一般现在时</strong>：进行时="正在"，一般时="经常"','know, want, like 等<strong>不用进行时</strong>'],examples:['She <span class="en">is reading</span> a book now.','I <span class="en">am studying</span> English.','<span class="en">Are</span> you <span class="en">listening</span>?','I <span class="en">know</span> the answer. (✓) 不是 I am knowing (✗)'],questions:[{type:'fill',q:'Look! The cat ___ (sleep) on the sofa.',answer:'is sleeping'},{type:'choice',q:'Listen! Someone ___.',options:['knocks','is knocking','knock','are knocking'],answer:1},{type:'fill',q:'We ___ (study) for the exam now.',answer:'are studying'},{type:'choice',q:'Which is correct?',options:['I am wanting a drink.','I am wanting it now.','I want a drink.','I wanting a drink.'],answer:2},{type:'fill',q:'He ___ (not work) today.',answer:"isn't working"}]},
-{id:6,title:'一般过去时',enTitle:'Past Simple',level:'A2',summary:'表示过去某个时间发生的动作。',points:['结构：<strong>主语 + 动词过去式</strong>','规则动词 +ed：work→worked, study→studied','<strong>不规则动词</strong>：go→went, eat→ate, see→saw','否定：<strong>didn\'t + 原形</strong>（用了 didn\'t 后动词还原！）','疑问：<strong>Did + 主语 + 原形</strong>？','be 动词过去：<strong>was/were</strong>'],examples:['I <span class="en">went</span> to Beijing last week.','She <span class="en">didn\'t come</span> to the party.','<span class="en">Did</span> you <span class="en">watch</span> the movie?','They <span class="en">were</span> very happy.'],questions:[{type:'fill',q:'I ___ (go) to the park yesterday.',answer:'went'},{type:'choice',q:'She ___ the game last night.',options:["didn't watched","didn't watch",'not watched',"wasn't watch"],answer:1},{type:'fill',q:'___ (do) you see him last week?',answer:'Did'},{type:'choice',q:'They ___ at home all day.',options:['was','were','are','did'],answer:1},{type:'fill',q:'He ___ (eat) pizza for lunch.',answer:'ate'}]},
-{id:7,title:'将来时',enTitle:'Future Tenses',level:'A2',summary:'英语表达将来有多种方式，will 和 be going to 最常用。',points:['<strong>will + 原形</strong>：临时决定、预测、承诺','<strong>be going to + 原形</strong>：计划好、有迹象的事','否定：<strong>won\'t</strong> (will not)','现在进行时也可表将来（已安排）：I\'m meeting her tomorrow.','区别：看到乌云→It\'s going to rain. 纯预测→It will rain.'],examples:['I <span class="en">will call</span> you later.（临时决定）','We <span class="en">are going to visit</span> London next month.','She <span class="en">won\'t be</span> late.','<span class="en">Will</span> you <span class="en">marry</span> me?'],questions:[{type:'choice',q:'Look at those clouds! It ___.',options:['will rain','is going to rain','rains','is raining'],answer:1},{type:'fill',q:'I ___ (help) you with that. (临时决定)',answer:'will help'},{type:'choice',q:'She ___ 20 next month.',options:['is','will be','is going to be','was'],answer:1},{type:'fill',q:'We ___ (visit) grandparents this weekend. (已计划)',answer:'are going to visit'},{type:'fill',q:'He ___ (not come) to the party. (won\'t)',answer:"won't come"}]},
-{id:8,title:'现在完成时',enTitle:'Present Perfect',level:'A2',summary:'连接过去和现在：过去的动作对现在有影响，或从过去持续到现在。',points:['结构：<strong>have/has + 过去分词</strong>','影响现在：I <strong>have lost</strong> my key.（现在找不到）','持续到现在：I <strong>have lived</strong> here for 10 years.','标志词：already, yet, just, ever, never, <strong>since</strong>, <strong>for</strong>','vs 过去时：过去时只讲过去，现在完成强调与"现在"的关系'],examples:['I <span class="en">have finished</span> my homework. 做完作业了。','She <span class="en">has been</span> to Paris three times.','<span class="en">Have</span> you <span class="en">ever eaten</span> sushi?','I <span class="en">haven\'t seen</span> him since Monday.'],questions:[{type:'fill',q:'I ___ (finish) my work. Now I can relax.',answer:'have finished'},{type:'choice',q:'She ___ to Japan twice.',options:['went','has been','has gone','goes'],answer:1},{type:'fill',q:'___ you ever ___ (try) Indian food?',answer:'Have tried'},{type:'choice',q:'I ___ my key. I can\'t open the door.',options:['lost','have lost','am losing','lose'],answer:1},{type:'fill',q:'He ___ (not call) me yet.',answer:"hasn't called"}]},
-{id:9,title:'形容词与副词',enTitle:'Adjectives & Adverbs',level:'A1',summary:'形容词修饰名词，副词修饰动词/形容词。英语中副词常以 -ly 结尾。',points:['<strong>形容词</strong>修饰名词：a beautiful flower','<strong>副词 = 形容词+ly</strong>：quick→quickly, careful→carefully','<strong>不规则</strong>：good→well, fast→fast, hard→hard','形容词放名词前或 be 后：She is happy.','<strong>比较级</strong> -er/more，<strong>最高级</strong> -est/most'],examples:['She is a <span class="en">careful</span> driver.','She drives <span class="en">carefully</span>.','He runs very <span class="en">fast</span>.','This is <span class="en">more interesting</span> than that.'],questions:[{type:'fill',q:'She sings ___ (beautiful).',answer:'beautifully'},{type:'choice',q:'He is a ___ runner.',options:['fastly','fast','quick','fastest'],answer:1},{type:'fill',q:'This flower is ___ (pretty) than that one.',answer:'prettier'},{type:'choice',q:'She did ___ in the exam.',options:['good','well','nice','fine'],answer:1},{type:'fill',q:'It is the ___ (big) building in the city.',answer:'biggest'}]},
-{id:10,title:'介词',enTitle:'Prepositions',level:'A2',summary:'介词表示时间(at/on/in)和空间位置的关系。',points:['<strong>时间 at</strong>：具体时刻 at 7:00, at noon','<strong>时间 on</strong>：具体天 on Monday, on May 1st','<strong>时间 in</strong>：长时间 in May, in summer, in 2024','<strong>地点 at</strong>：具体点 at the door','<strong>地点 on</strong>：表面 on the table','<strong>地点 in</strong>：空间内 in the room, in Beijing'],examples:['I\'ll see you <span class="en">at</span> 3:00.','Her birthday is <span class="en">on</span> June 5th.','I was born <span class="en">in</span> 2000.','The book is <span class="en">on</span> the desk.'],questions:[{type:'fill',q:'I usually get up ___ 7:00.',answer:'at'},{type:'choice',q:'We go to the beach ___ summer.',options:['at','on','in','for'],answer:2},{type:'fill',q:'See you ___ Monday!',answer:'on'},{type:'choice',q:'The cat is hiding ___ the bed.',options:['at','on','in','under'],answer:3},{type:'fill',q:'She lives ___ a small town.',answer:'in'}]},
-{id:11,title:'情态动词',enTitle:'Modal Verbs',level:'A2',summary:'情态动词表态度和语气——能力、可能性、必要性。后永远跟动词原形。',points:['<strong>can</strong>：能力、允许 I can swim.','<strong>could</strong>：委婉请求 Could you help?','<strong>must</strong>：必须 You must stop.','<strong>should</strong>：建议 You should rest.','<strong>may/might</strong>：可能 It may rain.','情态动词<strong>无三单变化</strong>：She can. (✓) She cans. (✗)'],examples:['I <span class="en">can</span> speak English.','You <span class="en">must</span> wear a seatbelt.','You <span class="en">should</span> exercise more.','<span class="en">Could</span> you open the window?'],questions:[{type:'fill',q:'She ___ swim very well. (表能力)',answer:'can'},{type:'choice',q:'You ___ smoking. It\'s bad for you.',options:['can stop','should stop','must to stop','stopped'],answer:1},{type:'fill',q:'___ I use your phone? (委婉)',answer:'Could'},{type:'choice',q:'It ___ rain later. Take an umbrella.',options:['must','should','might','can'],answer:2},{type:'fill',q:'You ___ be 18 to vote. (必须)',answer:'must'}]},
-{id:12,title:'条件句入门',enTitle:'Conditionals',level:'B1',summary:'条件句表达"如果…就…"的逻辑。第一条件句（真实）和第二条件句（虚拟）。',points:['<strong>First</strong>（真实将来）：If + 现在时, will + 原形','<strong>Second</strong>（虚拟现在）：If + 过去时, would + 原形','第一条件：条件<strong>可能发生</strong>','第二条件：条件<strong>不现实/假设</strong>','虚拟语气：If I <strong>were</strong> you, I would go.'],examples:['<span class="en">If</span> you study hard, you <span class="en">will pass</span>.','<span class="en">If</span> I <span class="en">were</span> you, I <span class="en">would accept</span>.','<span class="en">If</span> I <span class="en">had</span> money, I <span class="en">would buy</span> a house.'],questions:[{type:'fill',q:'If it rains, I ___ (stay) home.',answer:'will stay'},{type:'choice',q:'If I ___ you, I would apologize.',options:['am','was','were','be'],answer:2},{type:'fill',q:'If you heat water to 100°C, it ___ (boil).',answer:'boils'},{type:'choice',q:'If she ___ harder, she will get promoted.',options:['work','works','worked','will work'],answer:1},{type:'fill',q:'If I had more time, I ___ (learn) Spanish.',answer:'would learn'}]},
-{id:13,title:'被动语态',enTitle:'Passive Voice',level:'B1',summary:'被动语态强调动作的承受者。结构：be + 过去分词。',points:['结构：<strong>be + 过去分词</strong>（be 随时态变化）','现在时被动：am/is/are + done','过去时被动：was/were + done','现在完成被动：have/has been + done','情态动词被动：can/must + be + done','<strong>何时用</strong>：执行者不重要/未知时'],examples:['English <span class="en">is spoken</span> worldwide.','The cake <span class="en">was made</span> by my mom.','The room <span class="en">has been cleaned</span>.','This door <span class="en">must be locked</span> at night.'],questions:[{type:'fill',q:'The letters ___ (send) yesterday.',answer:'were sent'},{type:'choice',q:'This book ___ by Mark Twain.',options:['wrote','was written','is writing','has written'],answer:1},{type:'fill',q:'The room ___ (clean) every day.',answer:'is cleaned'},{type:'choice',q:'The homework must ___ by Friday.',options:['finish','finished','be finished','being finished'],answer:2},{type:'fill',q:'The window ___ (break) by a ball.',answer:'was broken'}]},
-{id:14,title:'定语从句',enTitle:'Relative Clauses',level:'B1',summary:'定语从句修饰名词，引导词有 who、which、that、whose、where。',points:['<strong>who</strong>：指人 The girl who lives next door','<strong>which</strong>：指物 The book which I bought','<strong>that</strong>：可指人可指物，更口语','<strong>whose</strong>：表示"谁的" a man whose son is a doctor','<strong>where</strong>：指地点 the house where I grew up'],examples:['The woman <span class="en">who</span> is talking is my boss.','This is the restaurant <span class="en">where</span> we met.','I like books <span class="en">that</span> make me think.','He is the student <span class="en">whose</span> project won.'],questions:[{type:'fill',q:'The person ___ called you is waiting. (指人)',answer:'who'},{type:'choice',q:'The car ___ he bought is expensive.',options:['who','whose','which','where'],answer:2},{type:'fill',q:'This is the school ___ I studied. (地点)',answer:'where'},{type:'choice',q:'I met a girl ___ mother is a pilot.',options:['who','which','whose','where'],answer:2},{type:'fill',q:'The movie ___ we watched was boring.',answer:'that'}]},
-{id:15,title:'综合复习',enTitle:'Final Review',level:'B1',summary:'综合检测全部语法点。建议完成前面14课再来。',points:['覆盖：时态、冠词、介词、情态动词、条件句、被动、定语从句','建议<strong>先完成前面14课</strong>','错题可回到对应课程重学','学完后英语语法应达到<strong>B1（中级）</strong>水平'],examples:['<span class="en">If</span> I had known earlier, I <span class="en">would have helped</span>.','The report <span class="en">must be submitted</span> by Friday.','She is the teacher <span class="en">who inspired</span> me most.'],questions:[{type:'choice',q:'If it ___ tomorrow, we will cancel.',options:['rain','rains','rained','will rain'],answer:1},{type:'fill',q:'The decision ___ (make) yesterday. (被动)',answer:'was made'},{type:'choice',q:'I have lived here ___ 2015.',options:['in','for','since','at'],answer:2},{type:'fill',q:'She is the one ___ helped me. (定语从句)',answer:'who'},{type:'choice',q:'By the time we arrived, the movie ___.',options:['already started','had already started','has already started','starts'],answer:1}]},
+let curTab = 'grammar';
+// grammar
+let glid=null, gphase='learn', gqidx=0, gans=[];
+// vocab
+let vmode='flashcard', vidx=0, vset=0, vans=[], vquizMode=false;
+// longsent
+let lsidx=0;
+// cloze
+let czidx=0, czans=[];
+// trans
+let tridx=0, transwer='';
+// reading
+let rdidx=0, rdans=[];
+
+function updateStreak(perfect){if(perfect){streak++;localStorage.setItem('eng_exam_streak',streak.toString())}}
+function shootConfetti(){
+  const w=document.createElement('div');w.className='confetti';
+  const cs=['#e8630a','#f59e0b','#3b82f6','#22a63e','#8b5cf6','#ec4899'];
+  for(let i=0;i<50;i++){const p=document.createElement('div');p.className='cp';p.style.left=Math.random()*100+'%';p.style.top=-(Math.random()*30)+'px';p.style.background=cs[Math.floor(Math.random()*cs.length)];p.style.width=(6+Math.random()*8)+'px';p.style.height=(6+Math.random()*8)+'px';p.style.animationDelay=Math.random()*1.2+'s';w.appendChild(p)}
+  document.body.appendChild(w);setTimeout(()=>w.remove(),2500)
+}
+function toast(m,t){const e=document.createElement('div');e.className='toast '+(t||'good');e.textContent=m;document.body.appendChild(e);setTimeout(()=>e.remove(),2200)}
+
+// ===== TAB SWITCH =====
+function switchTab(tab){
+  curTab=tab;glid=null;gphase='learn';vmode='flashcard';vidx=0;vquizMode=false;lsidx=0;czidx=0;czans=[];tridx=0;rdidx=0;rdans=[];
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
+  render()
+}
+// ===== RENDER =====
+function render(){
+  switch(curTab){
+    case 'grammar':renderGrammar();break
+    case 'vocab':renderVocab();break
+    case 'longsent':renderLongSent();break
+    case 'cloze':renderCloze();break
+    case 'trans':renderTrans();break
+    case 'reading':renderReading();break
+  }
+}
+window.onload=render
+
+// ==================== GRAMMAR ====================
+const GR_ICONS=['📝','👤','🔗','⏰','🏃','⏮','🔮','✅','🎨','📍','🔑','🔀','🔄','🔗','🏁','💭','⬆️','💪','🏗️','✂️'];
+const GR_TAGS={1:['可数/不可数','a/an/the'],2:['主格/宾格','物主代词'],3:['am/is/are','否定/疑问'],4:['三单+s','do/does'],5:['be+v-ing','正在发生'],6:['动词过去式','did/didn\'t'],7:['will','be going to'],8:['have/has done','since/for'],9:['-ly副词','比较级/最高级'],10:['at/on/in','时间/地点'],11:['can/must/should','+原形'],12:['if条件','真实/虚拟'],13:['be+过去分词','by'],14:['who/which/that','where/whose'],15:['综合','A1-B1'],16:['虚拟语气','if only/wish'],17:['倒装','Never/Only'],18:['强调句','It is...that'],19:['独立主格','with结构'],20:['省略/替代','so/not']};
+const GR_LESSONS=[
+{id:1,title:'名词与冠词',en:'Nouns & Articles',lvl:'A1',sum:'名词表示人、事物、地点。英语中名词前常需加冠词 a、an 或 the，中文没有此习惯。',pts:['<strong>可数名词</strong>有单复数：apple→apples','<strong>不可数名词</strong>无复数：water, rice, information','<strong>a/an</strong> 用于泛指单数：a cat, an apple','<strong>the</strong> 用于特指：the sun, the book on the table','复数/不可数泛指<strong>不加冠词</strong>：I like music.'],ex:['I saw <span class="en">a dog</span> in the park.','She ate <span class="en">an orange</span>.','<span class="en">The dog</span> is friendly.','<span class="en">Water</span> is important.'],qs:[{t:'c',q:'I need ___ umbrella.',op:['a','an','the','不加'],a:1},{t:'c',q:'___ sun rises in the east.',op:['A','An','The','不加'],a:2},{t:'f',q:'She has two ___ (cat).',a:'cats'},{t:'c',q:'___ milk is good for health.',op:['A','An','The','不加'],a:3},{t:'f',q:'I bought ___ book. (一本)',a:'a'}]},
+{id:2,title:'人称代词',en:'Personal Pronouns',lvl:'A1',sum:'人称代词代替人或事物的名称。分为主格（主语）、宾格（宾语）、物主代词。',pts:['<strong>主格</strong>：I,you,he,she,it,we,they','<strong>宾格</strong>：me,you,him,her,it,us,them','<strong>物主</strong>：my,your,his,her,its,our,their','英语<strong>必须有主语</strong>："下雨了"→"It is raining."'],ex:['<span class="en">He</span> is a teacher.','I like <span class="en">her</span>.','This is <span class="en">my</span> book.','<span class="en">It</span> is cold today.'],qs:[{t:'c',q:'___ is my best friend.',op:['Her','She','Hers','Herself'],a:1},{t:'f',q:'Please give ___ the book. (我，宾格)',a:'me'},{t:'c',q:'This is not your pen. It\'s ___.',op:['I','me','my','mine'],a:3},{t:'f',q:'___ are students. (我们)',a:'We'},{t:'c',q:'Look! ___ tail is long.',op:['It','Its','It\'s','His'],a:1}]},
+{id:3,title:'Be 动词',en:'Verb "to be"',lvl:'A1',sum:'be 动词是最基础的动词，表示"是、在"。根据主语人称和数变为 am、is、are。',pts:['<strong>I→am</strong>：I am a student.','<strong>he/she/it→is</strong>：She is happy.','<strong>we/you/they→are</strong>：We are friends.','否定：am not/<strong>isn\'t</strong>/<strong>aren\'t</strong>','疑问：be提前 <strong>Is</strong> he a doctor?'],ex:['<span class="en">I am</span> from China.','<span class="en">She is</span> a doctor.','<span class="en">They are</span> happy.','<span class="en">Is it</span> cold?'],qs:[{t:'f',q:'I ___ a student. (be)',a:'am'},{t:'c',q:'She ___ very tall.',op:['am','is','are','be'],a:1},{t:'f',q:'They ___ not here. (缩写)',a:"aren't"},{t:'c',q:'___ you a teacher?',op:['Am','Is','Are','Be'],a:2},{t:'f',q:'He ___ from Japan. (be)',a:'is'}]},
+{id:4,title:'一般现在时',en:'Present Simple',lvl:'A1',sum:'表示经常性/习惯性动作或普遍真理。',pts:['<strong>I/You/We/They+原形</strong>','<strong>He/She/It+动词+s/es</strong>','否定：don\'t/<strong>doesn\'t</strong>+原形','疑问：<strong>Do/Does</strong>提前','客观事实：The earth goes around the sun.'],ex:['I <span class="en">get up</span> at 7:00.','She <span class="en">works</span> in a hospital.','He <span class="en">doesn\'t eat</span> meat.','<span class="en">Do</span> you <span class="en">like</span> music?'],qs:[{t:'f',q:'She ___ (play) piano every evening.',a:'plays'},{t:'c',q:'He ___ to school by bus.',op:['go','gos','goes','going'],a:2},{t:'f',q:'They ___ (not like) spicy food.',a:"don't like"},{t:'c',q:'___ she know the answer?',op:['Do','Does','Is','Are'],a:1},{t:'f',q:'The sun ___ (rise) in the east.',a:'rises'}]},
+{id:5,title:'现在进行时',en:'Present Continuous',lvl:'A2',sum:'表示此刻正在进行的动作。结构：am/is/are + 动词-ing。',pts:['结构：<strong>am/is/are+动词-ing</strong>','I am reading./She is cooking.','否定：isn\'t/aren\'t+动词-ing','疑问：Is/Are+主语+动词-ing?','<strong>vs一般现在时</strong>：进行时="正在"','know,want,like<strong>不用进行时</strong>'],ex:['She <span class="en">is reading</span> now.','I <span class="en">am studying</span> English.','<span class="en">Are</span> you <span class="en">listening</span>?','I <span class="en">know</span> the answer. (✓)'],qs:[{t:'f',q:'Look! The cat ___ (sleep).',a:'is sleeping'},{t:'c',q:'Listen! Someone ___.',op:['knocks','is knocking','knock','are knocking'],a:1},{t:'f',q:'We ___ (study) now.',a:'are studying'},{t:'c',q:'Which is correct?',op:['I am wanting a drink.','I am wanting it now.','I want a drink.','I wanting a drink.'],a:2},{t:'f',q:'He ___ (not work) today.',a:"isn't working"}]},
+{id:6,title:'一般过去时',en:'Past Simple',lvl:'A2',sum:'表示过去某个时间发生的动作。',pts:['结构：<strong>主语+动词过去式</strong>','规则+ed：work→worked, study→studied','<strong>不规则</strong>：go→went,eat→ate,see→saw','否定：<strong>didn\'t+原形</strong>（动词还原！）','疑问：<strong>Did+主语+原形</strong>','be过去：<strong>was/were</strong>'],ex:['I <span class="en">went</span> to Beijing.','She <span class="en">didn\'t come</span>.','<span class="en">Did</span> you <span class="en">watch</span> it?','They <span class="en">were</span> happy.'],qs:[{t:'f',q:'I ___ (go) to the park yesterday.',a:'went'},{t:'c',q:'She ___ the game.',op:["didn't watched","didn't watch",'not watched',"wasn't watch"],a:1},{t:'f',q:'___ (do) you see him?',a:'Did'},{t:'c',q:'They ___ at home.',op:['was','were','are','did'],a:1},{t:'f',q:'He ___ (eat) pizza.',a:'ate'}]},
+{id:7,title:'将来时',en:'Future Tenses',lvl:'A2',sum:'will和be going to最常用。',pts:['<strong>will+原形</strong>：临时决定/预测/承诺','<strong>be going to+原形</strong>：计划好/有迹象','否定：<strong>won\'t</strong>(will not)','现在进行时也可表将来：I\'m meeting her tomorrow.','区别：乌云→It\'s going to rain. 纯预测→It will rain.'],ex:['I <span class="en">will call</span> you later.','We <span class="en">are going to visit</span> London.','She <span class="en">won\'t be</span> late.','<span class="en">Will</span> you <span class="en">marry</span> me?'],qs:[{t:'c',q:'Look at those clouds! It ___.',op:['will rain','is going to rain','rains','is raining'],a:1},{t:'f',q:'I ___ (help) you. (临时决定)',a:'will help'},{t:'c',q:'She ___ 20 next month.',op:['is','will be','is going to be','was'],a:1},{t:'f',q:'We ___ (visit) grandparents. (已计划)',a:'are going to visit'},{t:'f',q:'He ___ (not come). (won\'t)',a:"won't come"}]},
+{id:8,title:'现在完成时',en:'Present Perfect',lvl:'A2',sum:'连接过去和现在。',pts:['结构：<strong>have/has+过去分词</strong>','影响现在：I<strong>have lost</strong> my key.','持续到现在：I<strong>have lived</strong> here for 10 years.','标志词：already,yet,just,ever,never,<strong>since</strong>,<strong>for</strong>','vs过去时：过去时只讲过去，现在完成强调与"现在"的关系'],ex:['I <span class="en">have finished</span> my homework.','She <span class="en">has been</span> to Paris.','<span class="en">Have</span> you <span class="en">ever eaten</span> sushi?','I <span class="en">haven\'t seen</span> him since Monday.'],qs:[{t:'f',q:'I ___ (finish) my work.',a:'have finished'},{t:'c',q:'She ___ to Japan twice.',op:['went','has been','has gone','goes'],a:1},{t:'f',q:'___ you ever ___ (try) Indian food?',a:'Have tried'},{t:'c',q:'I ___ my key. Can\'t open door.',op:['lost','have lost','am losing','lose'],a:1},{t:'f',q:'He ___ (not call) yet.',a:"hasn't called"}]},
+{id:9,title:'形容词与副词',en:'Adj & Adv',lvl:'A1',sum:'形容词修饰名词，副词修饰动词/形容词。副词常以-ly结尾。',pts:['<strong>形容词</strong>修饰名词：a beautiful flower','<strong>副词=形容词+ly</strong>：quick→quickly','<strong>不规则</strong>：good→well,fast→fast,hard→hard','<strong>比较级</strong>-er/more，<strong>最高级</strong>-est/most'],ex:['She is a <span class="en">careful</span> driver.','She drives <span class="en">carefully</span>.','He runs very <span class="en">fast</span>.','This is <span class="en">more interesting</span>.'],qs:[{t:'f',q:'She sings ___ (beautiful).',a:'beautifully'},{t:'c',q:'He is a ___ runner.',op:['fastly','fast','quick','fastest'],a:1},{t:'f',q:'This is ___ (pretty) than that.',a:'prettier'},{t:'c',q:'She did ___ in the exam.',op:['good','well','nice','fine'],a:1},{t:'f',q:'It is the ___ (big) building.',a:'biggest'}]},
+{id:10,title:'介词',en:'Prepositions',lvl:'A2',sum:'介词表时间(at/on/in)和空间位置关系。',pts:['<strong>时间at</strong>：具体时刻 at 7:00, at noon','<strong>时间on</strong>：具体天 on Monday','<strong>时间in</strong>：长时间 in May, in 2024','<strong>地点at</strong>：具体点 at the door','<strong>地点on</strong>：表面 on the table','<strong>地点in</strong>：空间内 in Beijing'],ex:['See you <span class="en">at</span> 3:00.','Birthday <span class="en">on</span> June 5th.','Born <span class="en">in</span> 2000.','Book <span class="en">on</span> the desk.'],qs:[{t:'f',q:'I get up ___ 7:00.',a:'at'},{t:'c',q:'We swim ___ summer.',op:['at','on','in','for'],a:2},{t:'f',q:'See you ___ Monday!',a:'on'},{t:'c',q:'Cat is hiding ___ the bed.',op:['at','on','in','under'],a:3},{t:'f',q:'She lives ___ a small town.',a:'in'}]},
+{id:11,title:'情态动词',en:'Modal Verbs',lvl:'A2',sum:'表态度和语气——能力、可能性、必要性。后永远跟动词原形。',pts:['<strong>can</strong>：能力/允许','<strong>could</strong>：委婉请求','<strong>must</strong>：必须','<strong>should</strong>：建议','<strong>may/might</strong>：可能','情态动词<strong>无三单变化</strong>：She can. (✓)'],ex:['I <span class="en">can</span> speak English.','You <span class="en">must</span> wear seatbelt.','You <span class="en">should</span> exercise.','<span class="en">Could</span> you open the window?'],qs:[{t:'f',q:'She ___ swim well. (能力)',a:'can'},{t:'c',q:'You ___ smoking.',op:['can stop','should stop','must to stop','stopped'],a:1},{t:'f',q:'___ I use your phone? (委婉)',a:'Could'},{t:'c',q:'It ___ rain. Take umbrella.',op:['must','should','might','can'],a:2},{t:'f',q:'You ___ be 18 to vote. (必须)',a:'must'}]},
+{id:12,title:'条件句',en:'Conditionals',lvl:'B1',sum:'表达"如果…就…"。第一条件句(真实)和第二条件句(虚拟)。',pts:['<strong>First</strong>：If+现在时, will+原形','<strong>Second</strong>：If+过去时, would+原形','First：条件<strong>可能发生</strong>','Second：条件<strong>不现实/假设</strong>','虚拟语气：If I <strong>were</strong> you, I would go.'],ex:['<span class="en">If</span> you study, you <span class="en">will pass</span>.','<span class="en">If</span> I <span class="en">were</span> you, I <span class="en">would accept</span>.','<span class="en">If</span> I <span class="en">had</span> money, I <span class="en">would buy</span> a house.'],qs:[{t:'f',q:'If it rains, I ___ (stay) home.',a:'will stay'},{t:'c',q:'If I ___ you, I would apologize.',op:['am','was','were','be'],a:2},{t:'f',q:'If you heat water, it ___ (boil).',a:'boils'},{t:'c',q:'If she ___ harder, she will get promoted.',op:['work','works','worked','will work'],a:1},{t:'f',q:'If I had time, I ___ (learn) Spanish.',a:'would learn'}]},
+{id:13,title:'被动语态',en:'Passive Voice',lvl:'B1',sum:'强调动作承受者。结构：be+过去分词。',pts:['结构：<strong>be+过去分词</strong>(be随时态变化)','现在：am/is/are+done','过去：was/were+done','完成：have/has been+done','情态：can/must+be+done','<strong>何时用</strong>：执行者不重要/未知'],ex:['English <span class="en">is spoken</span> worldwide.','The cake <span class="en">was made</span> by mom.','The room <span class="en">has been cleaned</span>.','Door <span class="en">must be locked</span> at night.'],qs:[{t:'f',q:'Letters ___ (send) yesterday.',a:'were sent'},{t:'c',q:'This book ___ by Mark Twain.',op:['wrote','was written','is writing','has written'],a:1},{t:'f',q:'The room ___ (clean) every day.',a:'is cleaned'},{t:'c',q:'Homework must ___ by Friday.',op:['finish','finished','be finished','being finished'],a:2},{t:'f',q:'Window ___ (break) by a ball.',a:'was broken'}]},
+{id:14,title:'定语从句',en:'Relative Clauses',lvl:'B1',sum:'修饰名词。引导词：who,which,that,whose,where。',pts:['<strong>who</strong>：指人','<strong>which</strong>：指物','<strong>that</strong>：可人可物，更口语','<strong>whose</strong>：表示"谁的"','<strong>where</strong>：指地点'],ex:['The woman <span class="en">who</span> is talking is my boss.','This is the restaurant <span class="en">where</span> we met.','I like books <span class="en">that</span> make me think.','The student <span class="en">whose</span> project won.'],qs:[{t:'f',q:'The person ___ called you is waiting.',a:'who'},{t:'c',q:'The car ___ he bought is expensive.',op:['who','whose','which','where'],a:2},{t:'f',q:'This is the school ___ I studied.',a:'where'},{t:'c',q:'I met a girl ___ mother is a pilot.',op:['who','which','whose','where'],a:2},{t:'f',q:'The movie ___ we watched was boring.',a:'that'}]},
+{id:15,title:'综合复习',en:'Final Review',lvl:'B1',sum:'综合检测全部基础语法点。',pts:['覆盖：时态、冠词、介词、情态、条件、被动、定从','建议先完成前面14课','错题可回到对应课程重学','学完后语法应达<strong>B1</strong>水平'],ex:['<span class="en">If</span> I had known, I <span class="en">would have helped</span>.','Report <span class="en">must be submitted</span> by Friday.','She is the teacher <span class="en">who inspired</span> me.'],qs:[{t:'c',q:'If it ___ tomorrow, cancel.',op:['rain','rains','rained','will rain'],a:1},{t:'f',q:'Decision ___ (make) yesterday. (被动)',a:'was made'},{t:'c',q:'I have lived here ___ 2015.',op:['in','for','since','at'],a:2},{t:'f',q:'She is the one ___ helped me.',a:'who'},{t:'c',q:'By the time we arrived, movie ___.',op:['already started','had already started','has already started','starts'],a:1}]},
+// === B2 考研高级语法 ===
+{id:16,title:'虚拟语气进阶',en:'Subjunctive Advanced',lvl:'B2',sum:'虚拟语气是考研重点。除了if条件句，还有wish/as if/it is time/建议命令等结构。',pts:['<strong>wish+过去时</strong>：对现在的虚拟 I wish I <strong>were</strong> rich.','<strong>wish+had done</strong>：对过去的虚拟 I wish I <strong>had studied</strong> harder.','<strong>as if/as though+虚拟</strong>：He talks as if he <strong>knew</strong> everything.','<strong>would rather+过去时</strong>：I\'d rather you <strong>stayed</strong> here.','<strong>建议/命令+ (should) do</strong>：I suggest that he <strong>(should) go</strong>.','<strong>It is time+过去时</strong>：It\'s time we <strong>left</strong>.'],ex:['I <span class="en">wish</span> I <span class="en">were</span> taller.','She talks as <span class="en">if</span> she <span class="en">owned</span> the place.','It\'s high time you <span class="en">started</span> studying.','The doctor suggested that he <span class="en">take</span> a rest.'],qs:[{t:'f',q:'I wish I ___ (be) a bird.',a:'were'},{t:'c',q:'She speaks as if she ___ everything.',op:['knows','knew','has known','is knowing'],a:1},{t:'f',q:'It is time we ___ (go) home.',a:'went'},{t:'c',q:'I suggested that he ___ early.',op:['leaves','left','leave','leaving'],a:2},{t:'f',q:'I wish I ___ (study) harder before the exam.',a:'had studied'}]},
+{id:17,title:'倒装结构',en:'Inversion',lvl:'B2',sum:'考研阅读理解中大量出现倒装句。否定词/only/so等位于句首时需部分倒装（助动词提前）。',pts:['<strong>否定词句首→部分倒装</strong>：Never <strong>have I seen</strong> such beauty.','<strong>only+状语句首→倒装</strong>：Only then <strong>did I realize</strong> my mistake.','<strong>Not only...but also...</strong>：Not only <strong>is he</strong> smart, but also kind.','<strong>so/neither/nor</strong>：So <strong>do I</strong>. Neither <strong>can she</strong>.','<strong>完全倒装</strong>（地点状语+谓语+主语）：Here <strong>comes the bus</strong>.','<strong>as/though让步倒装</strong>：Young <strong>as he is</strong>, he knows a lot.'],ex:['<span class="en">Never</span> have I <span class="en">felt</span> so happy.','<span class="en">Not until</span> yesterday <span class="en">did</span> he <span class="en">know</span> the truth.','<span class="en">Hardly</span> had I <span class="en">arrived</span> when it rained.','Try <span class="en">as</span> he <span class="en">might</span>, he couldn\'t solve it.'],qs:[{t:'c',q:'Never ___ such a thing.',op:['I have seen','have I seen','I saw','I see'],a:1},{t:'f',q:'Only then ___ (do) I understand.',a:'did'},{t:'c',q:'Not only ___ but also plays piano.',op:['he sings','does he sing','he sing','sings he'],a:1},{t:'f',q:'Hardly ___ (have) we started when it rained.',a:'had'},{t:'c',q:'___ as he is, he is experienced.',op:['Young','Being young','Though young','A young'],a:0}]},
+{id:18,title:'强调句型',en:'Emphatic Structures',lvl:'B2',sum:'强调是考研翻译和写作的加分项。最核心的是It is...that...分裂句。',pts:['<strong>It is/was...that...</strong>：It was <strong>Tom</strong> that/who broke the window.','强调主语/宾语/状语均可放入It is...that框架','<strong>do/does/did+原形</strong>强调谓语：I <strong>did finish</strong> the work.','<strong>what从句强调</strong>：What I need <strong>is</strong> a good rest.','<strong>双重否定表强调</strong>：It is <strong>not uncommon</strong>.','<strong>倒装强调</strong>：On no account <strong>should you</strong> lie.'],ex:['<span class="en">It is</span> hard work <span class="en">that</span> leads to success.','<span class="en">What</span> we need <span class="en">is</span> more time.','I <span class="en">did see</span> him yesterday.','It is <span class="en">not without</span> reason that he resigned.'],qs:[{t:'c',q:'It was in the park ___ we first met.',op:['where','that','which','when'],a:1},{t:'f',q:'I ___ (do) believe you.',a:'do'},{t:'c',q:'___ is important is your attitude.',op:['That','What','It','This'],a:1},{t:'f',q:'It was John ___ broke the window.',a:'that'},{t:'c',q:'On no account ___ give up.',op:['you should','should you','you would','do you'],a:1}]},
+{id:19,title:'独立主格结构',en:'Absolute Construction',lvl:'B2',sum:'独立主格是考研阅读长难句的核心难点。它自带逻辑主语，与主句主语不同，作状语。',pts:['<strong>名词/代词+分词</strong>：Weather <strong>permitting</strong>, we\'ll go.','<strong>with+名词+分词/形容词/介词</strong>：With tears <strong>streaming down</strong> her face','<strong>名词+不定式</strong>：A lot of work <strong>to do</strong>, he left early.','<strong>There being+名词</strong>：There <strong>being</strong> no bus, we walked.','独立主格<strong>不是句子</strong>，只作状语，表原因/条件/伴随'],ex:['<span class="en">Time permitting</span>, I\'ll visit you.','He stood there, <span class="en">his hands trembling</span>.','<span class="en">With the sun setting</span>, we headed home.','<span class="en">There being</span> no time, we took a taxi.'],qs:[{t:'c',q:'___, we went out for a walk.',op:['The weather is fine','The weather being fine','Weather was fine','Being fine weather'],a:1},{t:'f',q:'With tears ___ (stream) down her face, she left.',a:'streaming'},{t:'c',q:'All things ___, it is a good plan.',op:['considering','considered','consider','to consider'],a:1},{t:'f',q:'There ___ (be) no bus, we walked home.',a:'being'},{t:'c',q:'___, he couldn\'t focus.',op:['So much noise outside','There being much noise','With so much noise outside','Both B and C'],a:3}]},
+{id:20,title:'省略与替代',en:'Ellipsis & Substitution',lvl:'B2',sum:'省略避免重复，是英语简洁表达的关键。考研阅读中常见并列省略和状语从句省略。',pts:['<strong>并列省略</strong>：Tom likes tea and Jack (likes) coffee.','<strong>状语从句省略</strong>：When (I was) young, I liked games.','<strong>so/not替代从句</strong>：Will it rain? I think <strong>so</strong>.','<strong>do so/that/it替代</strong>：I forgot to post. Sorry, I\'ll do <strong>it</strong>.','<strong>比较级省略</strong>：She runs faster than I (run).','<strong>不定式省略to</strong>：You may go if you want (to).'],ex:['When <span class="en">(she was) asked</span>, she refused to answer.','I think <span class="en">so</span>.','She studies harder than <span class="en">I (do)</span>.','He can leave if he wants <span class="en">to</span>.'],qs:[{t:'c',q:'When ___, water turns to steam.',op:['heating','heated','is heated','it heats'],a:1},{t:'f',q:'I haven\'t finished yet, but I will ___ (do).',a:'do'},{t:'c',q:'—Is it going to rain? —I hope ___.',op:['no','not','not so','not it'],a:1},{t:'f',q:'She works as hard as I ___ (do).',a:'do'},{t:'c',q:'Though ___, he remained calm.',op:['surprised','surprising','was surprised','is surprised'],a:0}]},
 ];
 
-// ===== STATE =====
-const STORAGE_KEY = 'grammar_v2_progress';
-let getStored = () => { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; } };
-let setStored = (o) => localStorage.setItem(STORAGE_KEY, JSON.stringify(o));
-let progress = getStored();
-let curLessonId = null;
-let lessonPhase = 'learn'; // 'learn' | 'quiz'
-let curQIdx = 0;
-let curAnswers = [];
-let streakCount = parseInt(localStorage.getItem('grammar_v2_streak') || '0');
-
-function getLP(id) { return progress[id] || { completed:false, score:0, bestScore:0 }; }
-function saveLP(id, score) {
-  const prev = getLP(id);
-  progress[id] = { completed:true, score, bestScore:Math.max(prev.bestScore,score), lastAttempt:new Date().toISOString().split('T')[0] };
-  if (score === 5) { streakCount++; localStorage.setItem('grammar_v2_streak', streakCount.toString()); }
-  setStored(progress);
-  refreshSidebar();
-}
-
-function completeCount() { return LESSONS.filter(l => getLP(l.id).completed).length; }
-function avgScore() {
-  const c = LESSONS.filter(l => getLP(l.id).completed);
-  return c.length ? Math.round(c.reduce((s,l)=>s+getLP(l.id).bestScore,0)/c.length) : null;
-}
-function bestScore() {
-  const s = LESSONS.map(l=>getLP(l.id).bestScore).filter(s=>s>0);
-  return s.length ? Math.max(...s) : null;
-}
-
-// ===== SIDEBAR =====
-function refreshSidebar() {
-  const nav = document.getElementById('lessonNav');
-  const groups = {A1:[],A2:[],B1:[]};
-  LESSONS.forEach((l,i) => { const g = ['A1','A2','B1'].includes(l.level)?l.level:'A2'; groups[g].push({l,i}); });
-  let h = '';
-  const labels = {A1:'基础入门',A2:'能力进阶',B1:'中级提升'};
-  for (const [g,items] of Object.entries(groups)) {
-    if (!items.length) continue;
-    h += `<div class="nav-group"><div class="nav-group-label">${labels[g]} · ${g}</div>`;
-    items.forEach(({l,i}) => {
-      const p = getLP(l.id); const act = curLessonId===l.id?' active':'';
-      const chk = p.completed?'done':'undone';
-      h += `<button class="nav-item${act}" onclick="openLesson(${l.id})">
-        <span class="num">${i+1}</span><span>${l.title}</span>
-        <span class="lvl lvl-${l.level}">${l.level}</span>
-        <span class="check ${chk}">${p.completed?'✓':''}</span></button>`;
+function renderGrammar(){
+  let h='';
+  // sidebar
+  const done=GR_LESSONS.filter(l=>gp('gr'+l.id,{}).completed).length;
+  const avg=(()=>{const c=GR_LESSONS.filter(l=>gp('gr'+l.id,{}).completed);return c.length?Math.round(c.reduce((s,l)=>s+gp('gr'+l.id,{}).bestScore,0)/c.length):null})();
+  h+=`<div class="gr-layout"><div class="gr-side">`;
+  h+=`<div class="gr-progress"><div class="gr-ring-row"><div class="gr-ring"><svg width="48" height="48" viewBox="0 0 48 48"><circle class="bg" cx="24" cy="24" r="21"/><circle class="fill" id="gRing" cx="24" cy="24" r="21" stroke-dasharray="131.95" stroke-dashoffset="131.95"/></svg><div class="in" id="gPct">0%</div></div><div class="gr-stats"><div>完成 <b id="gDone">${done}</b>/20 课</div><div>均分 <b id="gAvg">${avg!==null?avg+'/5':'-'}</b></div><span class="gr-streak" id="gStr">🔥 x${streak}</span></div></div></div>`;
+  h+=`<div class="gr-nav-list">`;
+  const groups={A1:[],A2:[],B1:[],B2:[]};
+  GR_LESSONS.forEach((l,i)=>{const g=['A1','A2','B1','B2'].includes(l.lvl)?l.lvl:'A2';groups[g].push({l,i})});
+  const glbl={A1:'基础入门',A2:'能力进阶',B1:'中级提升',B2:'考研进阶'};
+  for(const[g,items]of Object.entries(groups)){
+    if(!items.length)continue;
+    h+=`<div class="gr-nav-label">${glbl[g]}</div>`;
+    items.forEach(({l,i})=>{
+      const p=gp('gr'+l.id,{});const act=glid===l.id?' active':'';
+      const chk=p.completed?'✓':'';const ccl=p.completed?'color:var(--g)':'color:transparent';
+      h+=`<button class="gr-nav-item${act}" onclick="grOpen(${l.id})"><span class="n">${i+1}</span>${l.title}<span class="lv lv-${l.lvl}">${l.lvl}</span><span class="ck" style="${ccl}">${chk}</span></button>`;
     });
-    h += '</div>';
   }
-  nav.innerHTML = h;
-
-  const done = completeCount(); const pct = Math.round(done/15*100);
-  document.getElementById('progressPercent').textContent = pct+'%';
-  const circ = 144.51; document.getElementById('progressCircle').style.strokeDashoffset = circ - circ*done/15;
-  document.getElementById('pdCompleted').textContent = done;
-  const avg = avgScore(); document.getElementById('pdAvg').textContent = avg!==null?avg+'/5':'-';
-  const sb = document.getElementById('streakBadge');
-  if (streakCount > 1) { sb.style.display = 'inline-flex'; sb.textContent = '🔥 连击 x'+streakCount; }
-  else { sb.style.display = 'none'; }
+  h+=`</div><div class="sync-bar"><button onclick="exportProg()">📤导出</button><button onclick="importProg()">📥导入</button></div></div>`;
+  // main
+  h+=`<div style="flex:1;min-width:0">`;
+  if(!glid){h+=grWelcome()}else{h+=grLesson()}
+  h+=`</div></div>`;
+  document.getElementById('mainWrap').innerHTML=h;
+  // ring
+  const pct=Math.round(done/20*100);
+  document.getElementById('gPct').textContent=pct+'%';
+  document.getElementById('gRing').style.strokeDashoffset=131.95-131.95*done/20;
+  document.getElementById('gDone').textContent=done;
+  if(avg!==null)document.getElementById('gAvg').textContent=avg+'/5';
+  if(streak<=1)document.getElementById('gStr').style.display='none';
 }
 
-// ===== CONFETTI =====
-function shootConfetti() {
-  const wrap = document.createElement('div'); wrap.className = 'confetti-wrap';
-  const colors = ['#e8630a','#f59e0b','#3b82f6','#2d9d4a','#8b5cf6','#ec4899','#14b8a6'];
-  for (let i=0; i<60; i++) {
-    const p = document.createElement('div'); p.className = 'confetti-piece';
-    p.style.left = Math.random()*100+'%';
-    p.style.top = -(Math.random()*40)+'px';
-    p.style.background = colors[Math.floor(Math.random()*colors.length)];
-    p.style.width = (6+Math.random()*10)+'px';
-    p.style.height = (6+Math.random()*10)+'px';
-    p.style.animationDelay = Math.random()*1.2+'s';
-    p.style.animationDuration = (1.2+Math.random()*1.8)+'s';
-    wrap.appendChild(p);
-  }
-  document.body.appendChild(wrap);
-  setTimeout(()=>wrap.remove(), 3000);
+function grWelcome(){
+  const done=GR_LESSONS.filter(l=>gp('gr'+l.id,{}).completed).length;
+  return `<div class="welcome"><div class="wi">📝</div><h2>英语语法体系化学习</h2><p>20节课从零到考研难度，A1→B2逐步提升。每课先学知识点，再闯关练习，即时反馈。</p><div style="display:flex;gap:5px;justify-content:center;margin:18px 0;flex-wrap:wrap">${GR_LESSONS.map((l,i)=>`<div style="width:9px;height:9px;border-radius:50%;background:${gp('gr'+l.id,{}).completed?'var(--brand)':'var(--border)'}"></div>`).join('')}</div><p style="color:var(--t3);font-size:.84rem;margin-bottom:16px">已完成 ${done}/20 课${(()=>{const a=(()=>{const c=GR_LESSONS.filter(l=>gp('gr'+l.id,{}).completed);return c.length?Math.round(c.reduce((s,l)=>s+gp('gr'+l.id,{}).bestScore,0)/c.length):null})();return a!==null?' · 均分 '+a+'/5':''})()}</p><button class="btn btn-primary" onclick="grOpen(1)">🚀 开始学习</button></div>`;
 }
 
-// ===== RENDER =====
-function openLesson(id) {
-  curLessonId = id; lessonPhase = 'learn'; curQIdx = 0; curAnswers = [];
-  refreshSidebar(); renderLesson();
-  document.getElementById('mainContent').scrollTop = 0;
-  window.scrollTo({top:0,behavior:'smooth'});
-}
+function grOpen(id){glid=id;gphase='learn';gqidx=0;gans=[];renderGrammar();window.scrollTo({top:0,behavior:'smooth'})}
+function grStartQuiz(){gphase='quiz';gqidx=0;gans=[];renderGrammar()}
+function grBackLearn(){gphase='learn';renderGrammar()}
 
-function startQuiz() { lessonPhase = 'quiz'; curQIdx = 0; curAnswers = []; renderLesson(); }
-function backToLearn() { lessonPhase = 'learn'; renderLesson(); }
+function grLesson(){
+  const l=GR_LESSONS.find(x=>x.id===glid);if(!l)return grWelcome();
+  let h=`<div><div style="margin-bottom:20px"><span style="display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:999px;font-size:.75rem;font-weight:700;color:#fff;background:${l.lvl==='A1'?'var(--g)':l.lvl==='A2'?'var(--b)':l.lvl==='B1'?'var(--p)':'var(--r)'}">${GR_ICONS[l.id-1]} ${l.lvl} · 第${l.id}课</span><h2 style="font-size:1.7rem;font-weight:800;letter-spacing:-.02em;margin-top:8px">${l.title}</h2><div style="font-size:.88rem;color:var(--t3)">${l.en}</div></div>`;
 
-function renderLesson() {
-  const lsn = LESSONS.find(l => l.id === curLessonId);
-  if (!lsn) { renderWelcome(); return; }
-  const p = getLP(lsn.id);
-  let h = '';
-
-  // Header
-  h += `<div class="lsn-header">`;
-  h += `<span class="lvl-tag" style="background:${lsn.level==='A1'?'var(--green)':lsn.level==='A2'?'var(--blue)':'var(--purple)'}">${TOPIC_ICONS[lsn.id-1]} ${lsn.level} · 第${lsn.id}课</span>`;
-  h += `<h2>${lsn.title}</h2><div class="en">${lsn.enTitle}</div>`;
-  h += `</div>`;
-
-  if (lessonPhase === 'learn') {
-    // ====== LEARN MODE ======
-    // Topic chips
-    h += `<div class="topic-icon-row">`;
-    (TOPIC_TAGS[lsn.id]||[]).forEach(t=>{ h+=`<span class="topic-chip">📌 ${t}</span>`; });
-    h += `</div>`;
-
-    // Explanation
-    h += `<div class="exp-card">`;
-    h += `<h3>📚 知识点讲解</h3>`;
-    h += `<p class="summary">${lsn.summary}</p>`;
-    h += `<div class="point-grid">`;
-    lsn.points.forEach((pt,i)=>{
-      const icons = ['❶','❷','❸','❹','❺','❻'];
-      h += `<div class="point-item"><span class="pi-icon">${icons[i]||'•'}</span><span>${pt}</span></div>`;
-    });
-    h += `</div>`;
-    h += `<div class="examples-box"><div class="ex-label">💡 例句</div>`;
-    lsn.examples.forEach(e=>{ h+=`<p>${e}</p>`; });
-    h += `</div>`;
-    h += `</div>`;
-
-    // Big CTA
-    h += `<div style="text-align:center;margin-top:28px">`;
-    h += `<button class="wl-start" onclick="startQuiz()" style="font-size:1.1rem;padding:16px 48px">`;
-    h += `✏️ 开始练习 <span style="font-weight:400;opacity:0.8;margin-left:4px">（共 ${lsn.questions.length} 题）</span></button>`;
-    if (p.completed) {
-      h += `<p style="margin-top:12px;font-size:0.82rem;color:var(--text-3)">上次得分：${p.bestScore}/5 · ${p.lastAttempt}</p>`;
-    }
-    h += `</div>`;
-
+  if(gphase==='learn'){
+    h+=`<div style="display:flex;gap:8px;margin-bottom:18px">${(GR_TAGS[l.id]||[]).map(t=>`<span style="display:inline-flex;align-items:center;gap:4px;padding:5px 12px;background:var(--surface);border:1px solid var(--border);border-radius:999px;font-size:.76rem;color:var(--t2)">📌 ${t}</span>`).join('')}</div>`;
+    h+=`<div class="card"><h3>📚 知识点讲解</h3><p style="font-size:.9rem;color:var(--t2);line-height:1.75;margin-bottom:14px">${l.sum}</p>`;
+    l.pts.forEach((pt,i)=>{const icons=['❶','❷','❸','❹','❺','❻'];h+=`<div class="point-row"><span class="pi">${icons[i]||'•'}</span><span>${pt}</span></div>`});
+    h+=`</div>`;
+    h+=`<div class="ex-box"><div class="exl">💡 例句</div>${l.ex.map(e=>`<p>${e}</p>`).join('')}</div>`;
+    const p=gp('gr'+l.id,{});
+    h+=`<div style="text-align:center;margin-top:24px"><button class="btn btn-primary" onclick="grStartQuiz()" style="font-size:1.05rem;padding:15px 44px">✏️ 开始练习 (${l.qs.length}题)</button>${p.completed?`<p style="margin-top:10px;font-size:.8rem;color:var(--t3)">上次得分：${p.bestScore}/5 · ${p.lastAttempt}</p>`:''}</div>`;
   } else {
-    // ====== QUIZ MODE ======
-    // Back link
-    h += `<div style="margin-bottom:18px"><button onclick="backToLearn()" style="background:none;border:none;color:var(--brand);cursor:pointer;font-size:0.85rem;font-family:var(--font);font-weight:600">← 返回查看知识点</button></div>`;
-
-    if (curQIdx >= lsn.questions.length) {
-      // Result
-      const correct = curAnswers.filter(a=>a.correct).length;
-      const total = lsn.questions.length;
-      let sc='l', icon='🌱', msg='万事开头难！再试一次吧。';
-      if (correct===total) { sc='p'; icon='🎉'; msg='满分！太棒了！你对这个语法点掌握得非常好。'; shootConfetti(); }
-      else if (correct>=4) { sc='g'; icon='🌟'; msg='很好！只错了一个，回到知识点复习一下就更完美了。'; }
-      else if (correct>=3) { sc='o'; icon='📖'; msg='还不错！建议回到知识点再复习一遍。'; }
-      else if (correct>=2) { sc='l'; icon='💪'; msg='还需努力！回去仔细读知识点，然后重做。'; }
-
-      h += `<div class="result"><div class="r-icon">${icon}</div>`;
-      h += `<div class="r-score ${sc}">${correct}/${total}</div>`;
-      h += `<div class="r-label">你的得分</div><div class="r-msg">${msg}</div>`;
-      h += `<div class="r-actions">`;
-      h += `<button class="btn-retry" onclick="retryLesson()">🔄 重新挑战</button>`;
-      h += `<button class="btn-retry" onclick="backToLearn()" style="background:var(--brand-light);color:var(--brand)">📖 复习知识点</button>`;
-      if (lsn.id < LESSONS.length) h += `<button class="btn-next" onclick="openLesson(${lsn.id+1})">下一课 →</button>`;
-      h += `</div></div>`;
-      saveLP(lsn.id, correct);
+    h+=`<button onclick="grBackLearn()" style="background:none;border:none;color:var(--brand);cursor:pointer;font-size:.85rem;font-family:var(--font);font-weight:600;margin-bottom:16px">← 返回查看知识点</button>`;
+    if(gqidx>=l.qs.length){
+      const correct=gans.filter(a=>a.correct).length;
+      let sc='l',icon='🌱',msg='万事开头难，回去复习再试！';
+      if(correct===5){sc='p';icon='🎉';msg='满分！太棒！';shootConfetti();updateStreak(true)}
+      else if(correct>=4){sc='g';icon='🌟';msg='很好！只错一个。'}
+      else if(correct>=3){sc='o';icon='📖';msg='不错，建议复习知识点后重做。'}
+      h+=`<div class="result"><div class="card"><div class="ri">${icon}</div><div class="rs ${sc}">${correct}/5</div><div class="rlbl">你的得分</div><div class="rm">${msg}</div><div class="ra"><button class="btn btn-ghost" onclick="grStartQuiz()">🔄 重做</button><button class="btn btn-ghost" onclick="grBackLearn()">📖 复习</button>${l.id<GR_LESSONS.length?`<button class="btn btn-primary" onclick="grOpen(${l.id+1})">下一课 →</button>`:''}</div></div></div>`;
+      const p=gp('gr'+l.id,{});p.completed=true;p.score=correct;p.bestScore=Math.max(p.bestScore||0,correct);p.lastAttempt=new Date().toISOString().split('T')[0];prog['gr'+l.id]=p;save();renderGrammar();
     } else {
-      h += `<div class="quiz-section">`;
-      h += `<div class="quiz-header"><span class="quiz-counter">第 ${curQIdx+1} 题 / 共 ${lsn.questions.length} 题</span>`;
-      h += `<div class="quiz-dots">`;
-      for (let i=0;i<lsn.questions.length;i++) {
-        let cls=''; if (i<curAnswers.length) cls=curAnswers[i].correct?'done':'wrong'; else if (i===curQIdx) cls='cur';
-        h += `<div class="quiz-dot ${cls}"></div>`;
-      }
-      h += `</div></div>`;
-
-      const q = lsn.questions[curQIdx];
-      h += `<div class="q-card">`;
-      h += `<span class="q-type">${q.type==='choice'?'🔤 选择题':'✏️ 填空题'}</span>`;
-      h += `<div class="q-text">${q.q}</div>`;
-
-      if (q.type === 'choice') {
-        h += `<div class="options" id="optWrap">`;
-        const letters = ['A','B','C','D'];
-        q.options.forEach((o,i) => {
-          h += `<button class="opt" onclick="selChoice(${i})" data-idx="${i}"><span class="letter">${letters[i]}</span><span>${o}</span></button>`;
-        });
-        h += `</div>`;
-      } else {
-        h += `<div class="fill-row"><input class="fill-input" id="fillIn" placeholder="输入答案..." onkeydown="if(event.key==='Enter')subFill()" autocomplete="off"><button class="btn-submit" onclick="subFill()">确认</button></div>`;
-      }
-      h += `<div class="fb" id="fb"></div></div></div>`;
+      const q=l.qs[gqidx];
+      h+=`<div class="q-card"><div class="q-dots">${l.qs.map((_,i)=>{let c='';if(i<gans.length)c=gans[i].correct?'done':'wrong';else if(i===gqidx)c='cur';return`<div class="q-dot ${c}"></div>`}).join('')}</div><span class="qt">${q.t==='c'?'🔤 选择':'✏️ 填空'}</span>`;
+      h+=`<div class="qtx">${q.q}</div>`;
+      if(q.t==='c'){h+=`<div class="opts">${['A','B','C','D'].map((lt,i)=>`<button class="opt" onclick="grSel(${i})"><span class="lt">${lt}</span>${q.op[i]}</button>`).join('')}</div>`}
+      else{h+=`<div class="fill-r"><input class="fill-in" id="grFill" placeholder="输入答案..." onkeydown="if(event.key==='Enter')grSub()" autocomplete="off"><button class="btn btn-primary btn-sm" onclick="grSub()">确认</button></div>`}
+      h+=`<div class="fb-toast" id="grFb"></div></div>`;
     }
   }
-
-  document.getElementById('mainContent').innerHTML = h;
-  setTimeout(()=>{ const f=document.getElementById('fillIn'); if(f)f.focus(); }, 100);
+  h+=`</div>`;
+  setTimeout(()=>{const f=document.getElementById('grFill');if(f)f.focus()},100);
+  return h;
+}
+function grSel(idx){
+  const q=GR_LESSONS.find(l=>l.id===glid).qs[gqidx];const ok=idx===q.a;gans.push({correct:ok});
+  document.querySelectorAll('.opts .opt').forEach((b,i)=>{b.disabled=true;if(i===q.a)b.classList.add('correct');if(i===idx&&!ok)b.classList.add('wrong')});
+  const fb=document.getElementById('grFb');fb.className='fb-toast show '+(ok?'ok':'no');fb.textContent=ok?'✓ 正确！':'✗ 正确答案：'+q.op[q.a];
+  setTimeout(()=>{gqidx++;grLesson()},1100)
+}
+function grSub(){
+  const inp=document.getElementById('grFill');if(!inp||!inp.value.trim())return;
+  const q=GR_LESSONS.find(l=>l.id===glid).qs[gqidx];
+  const ua=inp.value.trim();const ca=Array.isArray(q.a)?q.a:[q.a];
+  const ok=ca.some(a=>ua.toLowerCase()===a.toLowerCase());gans.push({correct:ok});
+  inp.disabled=true;inp.classList.add(ok?'good':'bad');
+  if(!ok)inp.value=ua+' → '+ca[0];
+  const fb=document.getElementById('grFb');fb.className='fb-toast show '+(ok?'ok':'no');fb.textContent=ok?'✓ 正确！':'✗ 正确答案：'+ca[0];
+  document.querySelector('.fill-r .btn')?.setAttribute('disabled','');
+  setTimeout(()=>{gqidx++;grLesson()},1500)
 }
 
-function selChoice(idx) {
-  const q = LESSONS.find(l=>l.id===curLessonId).questions[curQIdx];
-  const ok = idx === q.answer; curAnswers.push({answer:idx,correct:ok});
-  const btns = document.querySelectorAll('#optWrap .opt');
-  btns.forEach((b,i)=>{
-    b.disabled = true;
-    if (i===q.answer) b.classList.add('correct');
-    if (i===idx && !ok) b.classList.add('wrong');
+// ==================== VOCAB ====================
+const VOCAB_SETS=[
+{name:'高频核心词 (1-20)',words:[
+  {w:'abandon',p:'v.',m:'放弃，抛弃',ex:'He abandoned his plan to travel.',ch:'他放弃了旅行计划。'},
+  {w:'abstract',p:'adj./n.',m:'抽象的；摘要',ex:'The concept is too abstract to understand.',ch:'这个概念太抽象难以理解。'},
+  {w:'academic',p:'adj.',m:'学术的，学院的',ex:'She has an academic background in physics.',ch:'她有物理学学术背景。'},
+  {w:'access',p:'n./v.',m:'进入；获取',ex:'Students have access to the online library.',ch:'学生可以访问在线图书馆。'},
+  {w:'accommodate',p:'v.',m:'容纳；适应',ex:'The hall can accommodate 500 people.',ch:'大厅可容纳500人。'},
+  {w:'accompany',p:'v.',m:'陪伴，伴随',ex:'She accompanied me to the station.',ch:'她陪我去车站。'},
+  {w:'accomplish',p:'v.',m:'完成，达成',ex:'We accomplished our goal ahead of schedule.',ch:'我们提前完成了目标。'},
+  {w:'account',p:'n./v.',m:'账户；解释(account for)',ex:'How do you account for the delay?',ch:'你怎么解释延迟？'},
+  {w:'accumulate',p:'v.',m:'积累，积聚',ex:'He has accumulated much experience.',ch:'他积累了丰富经验。'},
+  {w:'accurate',p:'adj.',m:'精确的，准确的',ex:'The data must be accurate.',ch:'数据必须精确。'},
+  {w:'acknowledge',p:'v.',m:'承认；感谢',ex:'She acknowledged her mistake.',ch:'她承认了错误。'},
+  {w:'acquire',p:'v.',m:'获得，习得',ex:'It takes time to acquire a new skill.',ch:'习得新技能需要时间。'},
+  {w:'adapt',p:'v.',m:'适应；改编',ex:'We must adapt to the new environment.',ch:'我们必须适应新环境。'},
+  {w:'adequate',p:'adj.',m:'足够的，适当的',ex:'The supply is adequate for our needs.',ch:'供给足够满足需求。'},
+  {w:'adjust',p:'v.',m:'调整，适应',ex:'You need to adjust your attitude.',ch:'你需要调整你的态度。'},
+  {w:'administration',p:'n.',m:'管理；行政',ex:'The administration made a new policy.',ch:'管理层制定了新政策。'},
+  {w:'admire',p:'v.',m:'钦佩，赞赏',ex:'I admire your courage.',ch:'我钦佩你的勇气。'},
+  {w:'admit',p:'v.',m:'承认；准许进入',ex:'He admitted that he was wrong.',ch:'他承认他错了。'},
+  {w:'adopt',p:'v.',m:'采用；收养',ex:'The company adopted a new strategy.',ch:'公司采用了新策略。'},
+  {w:'advance',p:'n./v.',m:'前进；进步',ex:'Technology advances rapidly.',ch:'技术进步迅速。'},
+]},
+{name:'高频核心词 (21-40)',words:[
+  {w:'adverse',p:'adj.',m:'不利的，相反的',ex:'The drug has adverse effects.',ch:'这种药有副作用。'},
+  {w:'advocate',p:'v./n.',m:'提倡；倡导者',ex:'He advocates for environmental protection.',ch:'他倡导环境保护。'},
+  {w:'affair',p:'n.',m:'事务，事件',ex:'It is a private affair.',ch:'这是私事。'},
+  {w:'affect',p:'v.',m:'影响；打动',ex:'The weather affects crop growth.',ch:'天气影响作物生长。'},
+  {w:'aggregate',p:'n./v.',m:'合计，总计',ex:'The aggregate cost is $1000.',ch:'合计费用是1000美元。'},
+  {w:'aggressive',p:'adj.',m:'侵略的；进取的',ex:'He has an aggressive business style.',ch:'他有进取的商业风格。'},
+  {w:'allocate',p:'v.',m:'分配，拨出',ex:'Funds were allocated to education.',ch:'资金被分配给教育。'},
+  {w:'alter',p:'v.',m:'改变，修改',ex:'The plan was altered significantly.',ch:'计划被大幅修改。'},
+  {w:'alternative',p:'n./adj.',m:'替代方案；替代的',ex:'We need to find an alternative.',ch:'我们需要找一个替代方案。'},
+  {w:'ambiguous',p:'adj.',m:'模糊的，歧义的',ex:'The statement is ambiguous.',ch:'这个陈述很模糊。'},
+  {w:'ambitious',p:'adj.',m:'有雄心的',ex:'She is an ambitious young lawyer.',ch:'她是个有雄心的年轻律师。'},
+  {w:'amend',p:'v.',m:'修正，修订',ex:'The contract was amended.',ch:'合同被修订了。'},
+  {w:'analogy',p:'n.',m:'类比，比喻',ex:'He drew an analogy between the two.',ch:'他在两者间做了类比。'},
+  {w:'analyze',p:'v.',m:'分析',ex:'We need to analyze the data carefully.',ch:'我们需要仔细分析数据。'},
+  {w:'annual',p:'adj.',m:'每年的',ex:'The annual meeting will be held next week.',ch:'年会将于下周举行。'},
+  {w:'anticipate',p:'v.',m:'预期，期望',ex:'We anticipate a rise in demand.',ch:'我们预期需求上升。'},
+  {w:'apparent',p:'adj.',m:'显然的，表面上的',ex:'It became apparent that he was lying.',ch:'显然他在撒谎。'},
+  {w:'appeal',p:'v./n.',m:'呼吁；吸引',ex:'The idea appeals to young people.',ch:'这个想法吸引年轻人。'},
+  {w:'application',p:'n.',m:'申请；应用',ex:'The application of AI is widespread.',ch:'AI的应用很广泛。'},
+  {w:'approach',p:'v./n.',m:'接近；方法',ex:'We need a new approach.',ch:'我们需要新方法。'},
+]},
+{name:'高频核心词 (41-60)',words:[
+  {w:'appropriate',p:'adj.',m:'适当的',ex:'Is this appropriate for the occasion?',ch:'这对场合合适吗？'},
+  {w:'approximate',p:'adj.',m:'大约的',ex:'The approximate cost is $500.',ch:'大约费用是500美元。'},
+  {w:'arbitrary',p:'adj.',m:'任意的，武断的',ex:'The decision seems arbitrary.',ch:'这个决定似乎很武断。'},
+  {w:'aspect',p:'n.',m:'方面',ex:'We considered every aspect of the problem.',ch:'我们考虑了问题的方方面面。'},
+  {w:'assemble',p:'v.',m:'集合；组装',ex:'They assembled in the hall.',ch:'他们在大厅集合。'},
+  {w:'assess',p:'v.',m:'评估',ex:'We need to assess the damage.',ch:'我们需要评估损失。'},
+  {w:'assign',p:'v.',m:'分配，指派',ex:'He was assigned to the project.',ch:'他被分配到这个项目。'},
+  {w:'assist',p:'v.',m:'帮助，协助',ex:'Can I assist you?',ch:'我能帮你吗？'},
+  {w:'associate',p:'v.',m:'联系；关联',ex:'People associate red with danger.',ch:'人们把红色和危险联系起来。'},
+  {w:'assume',p:'v.',m:'假设；承担',ex:'Don\'t assume anything.',ch:'不要做任何假设。'},
+  {w:'assure',p:'v.',m:'使确信，保证',ex:'I assure you it\'s safe.',ch:'我向你保证它是安全的。'},
+  {w:'atmosphere',p:'n.',m:'氛围；大气',ex:'The atmosphere was tense.',ch:'气氛很紧张。'},
+  {w:'attach',p:'v.',m:'附上，连接',ex:'Please attach your resume.',ch:'请附上你的简历。'},
+  {w:'attain',p:'v.',m:'获得，达到',ex:'He attained his goal.',ch:'他达到了目标。'},
+  {w:'attribute',p:'v./n.',m:'归因于；属性',ex:'She attributes her success to hard work.',ch:'她把成功归因于努力。'},
+  {w:'authority',p:'n.',m:'权威；当局',ex:'He is an authority on the subject.',ch:'他是这个主题的权威。'},
+  {w:'available',p:'adj.',m:'可用的，可获得的',ex:'Is the manager available?',ch:'经理有空吗？'},
+  {w:'aware',p:'adj.',m:'意识到的',ex:'Are you aware of the risks?',ch:'你意识到风险了吗？'},
+  {w:'barrier',p:'n.',m:'障碍，壁垒',ex:'Language is a barrier to communication.',ch:'语言是沟通的障碍。'},
+  {w:'benefit',p:'n./v.',m:'利益；受益',ex:'Exercise benefits your health.',ch:'运动有益健康。'},
+]},
+];
+
+function renderVocab(){
+  const vs=VOCAB_SETS[vset];if(!vs)return;
+  let h=`<div class="section-title">📚 考研高频词汇</div><div class="section-sub">共 ${VOCAB_SETS.reduce((s,set)=>s+set.words.length,0)} 词，选自考英语大纲核心词。点击翻转卡片看释义。</div>`;
+  // set tabs
+  h+=`<div style="display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap">${VOCAB_SETS.map((s,i)=>`<button class="btn ${i===vset?'btn-primary':'btn-ghost'} btn-sm" onclick="vset=${i};vidx=0;vmode='flashcard';renderVocab()">${s.name}</button>`).join('')}</div>`;
+
+  if(vmode==='flashcard'&&!vquizMode){
+    const w=vs.words[vidx];
+    h+=`<div style="display:flex;align-items:center;gap:16px;margin-bottom:14px"><span style="font-size:.84rem;color:var(--t3)">${vidx+1}/${vs.words.length}</span><div style="flex:1;height:3px;background:var(--border);border-radius:2px"><div style="height:100%;background:var(--brand);border-radius:2px;width:${(vidx+1)/vs.words.length*100}%;transition:width .3s"></div></div></div>`;
+    h+=`<div class="flashcard" id="fCard" onclick="this.classList.toggle('flipped')"><div class="fc-inner"><div class="fc-front"><div class="fc-word">${w.w}</div><div class="fc-pos">${w.p}</div><div class="fc-hint">👆 点击翻转查看释义</div></div><div class="fc-back"><div class="fc-meaning">${w.m}</div><div class="fc-example">"${w.ex}"<br><span style="color:var(--t3);font-size:.82rem">${w.ch}</span></div></div></div></div>`;
+    h+=`<div style="display:flex;gap:8px;justify-content:center;margin-top:16px"><button class="btn btn-ghost btn-sm" onclick="vidx=Math.max(0,vidx-1);renderVocab()" ${vidx===0?'disabled':''}>← 上一个</button><button class="btn btn-ghost btn-sm" onclick="vidx=Math.min(vs.words.length-1,vidx+1);renderVocab()" ${vidx===vs.words.length-1?'disabled':''}>下一个 →</button><button class="btn btn-primary btn-sm" onclick="vquizMode=true;vmode='quiz';vans=[];vidx=0;renderVocab()">📝 测验模式</button></div>`;
+  } else if(vquizMode){
+    // Quiz mode
+    if(vidx>=vs.words.length){
+      const correct=vans.filter(a=>a.correct).length;
+      h+=`<div class="result"><div class="card"><div class="ri">${correct===vs.words.length?'🎉':'📖'}</div><div class="rs ${correct===vs.words.length?'p':correct>=vs.words.length*0.8?'g':correct>=vs.words.length*0.6?'o':'l'}">${correct}/${vs.words.length}</div><div class="rlbl">测验得分</div><div class="ra"><button class="btn btn-ghost" onclick="vquizMode=false;vidx=0;renderVocab()">📖 返回学习</button><button class="btn btn-primary" onclick="vquizMode=true;vans=[];vidx=0;renderVocab()">🔄 重测</button></div></div></div>`;
+    } else {
+      const w=vs.words[vidx];
+      const wrongs=[];while(wrongs.length<3){const r=vs.words[Math.floor(Math.random()*vs.words.length)];if(r.w!==w.w&&!wrongs.find(x=>x.w===r.w))wrongs.push(r)}
+      const opts=[w,...wrongs].sort(()=>Math.random()-.5);
+      const correctIdx=opts.findIndex(o=>o.w===w.w);
+      h+=`<div class="q-card"><div class="q-dots">${vs.words.map((_,i)=>{let c='';if(i<vans.length)c=vans[i].correct?'done':'wrong';else if(i===vidx)c='cur';return`<div class="q-dot ${c}"></div>`}).join('')}</div><span class="qt">🔤 选择对应的英文</span><div class="qtx" style="font-size:1.3rem;text-align:center">${w.m}</div>`;
+      h+=`<div class="opts">${opts.map((o,i)=>`<button class="opt" onclick="vocabSel(${i},${correctIdx})"><span class="lt">${['A','B','C','D'][i]}</span>${o.w}</button>`).join('')}</div>`;
+      h+=`<div class="fb-toast" id="vFb"></div></div>`;
+      h+=`<div style="margin-top:10px;display:flex;gap:8px;justify-content:space-between"><span style="font-size:.78rem;color:var(--t3)">${vidx+1}/${vs.words.length}</span><button class="btn btn-ghost btn-sm" onclick="vquizMode=false;renderVocab()">退出测验</button></div>`;
+    }
+  }
+  document.getElementById('mainWrap').innerHTML=h;
+  // reset flashcard
+  const fc=document.getElementById('fCard');if(fc)fc.classList.remove('flipped');
+}
+function vocabSel(idx,correctIdx){
+  const ok=idx===correctIdx;vans.push({correct:ok});
+  const btns=document.querySelectorAll('.opts .opt');
+  btns.forEach((b,i)=>{b.disabled=true;if(i===correctIdx)b.classList.add('correct');if(i===idx&&!ok)b.classList.add('wrong')});
+  const fb=document.getElementById('vFb');if(fb){fb.className='fb-toast show '+(ok?'ok':'no');fb.textContent=ok?'✓ 正确！':'✗ 看仔细哦'}
+  setTimeout(()=>{vidx++;renderVocab()},1000)
+}
+
+// ==================== LONG SENTENCES ====================
+const LONG_SENTS=[
+  {s:'The fact that children\'s ideas about science form part of a larger framework of ideas means that it is easier to change them.',src:'考研英语阅读真题风格',ana:'<b>结构</b>：主语(<span class="hl-main">The fact</span>) + 同位语从句(<span class="hl-sub">that...framework</span>) + 谓语(<span class="hl-main">means</span>) + 宾语从句(<span class="hl-clue">that it is easier...</span>)<br><b>核心</b>：The fact...means that... 主谓分离是考研惯用手法<br><b>译文</b>：儿童的科学观念是更大观念框架的一部分，这一事实意味着改变它们更容易。',tr:'儿童的科学观念是更大观念框架的一部分，这一事实意味着改变它们更容易。'},
+  {s:'It is not by chance that the Funeral March is not the last movement of the Eroica Symphony, but the second, so that suffering does not have the last word.',src:'考研英语翻译真题风格',ana:'<b>结构</b>：It is...that <span class="hl-clue">强调句型</span> + so that <span class="hl-clue">目的状语从句</span><br><b>核心</b>：双重否定(not by chance) + 强调(It is...that) + 结果(so that)<br><b>译文</b>：《葬礼进行曲》不是《英雄交响曲》的最后乐章而是第二乐章，这并非偶然，因此苦难并没有最终发言权。',tr:'《葬礼进行曲》不是《英雄交响曲》的最后乐章而是第二乐章，这并非偶然，因此苦难并没有最终发言权。'},
+  {s:'Only when humanity began to get its food in a more productive way was there time for other things.',src:'考研英语完形真题风格',ana:'<b>结构</b>：Only when... + <span class="hl-clue">部分倒装</span> was there...<br><b>核心</b>：Only+状语从句置于句首，主句需部分倒装(was there)<br><b>译文</b>：只有当人类开始以更高效的方式获取食物时，才有时间做其他事情。',tr:'只有当人类开始以更高效的方式获取食物时，才有时间做其他事情。'},
+  {s:'What is harder to establish is whether the productivity revolution that businessmen assume they are presiding over is for real.',src:'考研英语阅读真题风格',ana:'<b>结构</b>：主语从句(<span class="hl-main">What...establish</span>) + 系动词(<span class="hl-main">is</span>) + 表语从句(<span class="hl-clue">whether...</span>)<br><b>复杂点</b>：表语从句中嵌套定语从句(that businessmen assume)和宾语从句(they are presiding over)<br><b>译文</b>：更难确定的是，商界人士自认为主导的生产力革命是否真实存在。',tr:'更难确定的是，商界人士自认为主导的生产力革命是否真实存在。'},
+  {s:'With economic growth having come to a halt, policymakers can no longer rely on rising tax revenues to fund public services.',src:'考研英语阅读真题风格',ana:'<b>结构</b>：<span class="hl-clue">With独立主格结构</span>(With...halt) + 主句<br><b>核心</b>：With+名词+现在分词完成式，表原因<br><b>译文</b>：随着经济增长停滞，政策制定者不能再依靠增加的税收来为公共服务提供资金。',tr:'随着经济增长停滞，政策制定者不能再依靠增加的税收来为公共服务提供资金。'},
+  {s:'Not until these issues are resolved will a complete transformation of the education system be possible.',src:'考研英语翻译真题风格',ana:'<b>结构</b>：Not until... + <span class="hl-clue">部分倒装</span> will...be possible<br><b>核心</b>：Not until引导时间状语，主句倒装<br><b>译文</b>：直到这些问题被解决，教育体系的完全变革才有可能。',tr:'直到这些问题被解决，教育体系的完全变革才有可能。'},
+  {s:'The idea that learning is a lifelong process has been expressed by philosophers and educationalists throughout the centuries.',src:'考研英语阅读真题风格',ana:'<b>结构</b>：主语(The idea) + <span class="hl-clue">同位语从句</span>(that learning is...process) + 谓语(has been expressed)<br><b>核心</b>：同位语从句解释idea的内容，主谓相隔较远<br><b>译文</b>：学习是一个终身过程——这一观点被数个世纪以来的哲学家和教育家们反复表达。',tr:'学习是一个终身过程——这一观点被数个世纪以来的哲学家和教育家们反复表达。'},
+  {s:'As funding for science has declined, scientists have attacked "anti-science" in several books, notably in Higher Superstition.',src:'考研英语阅读真题风格',ana:'<b>结构</b>：<span class="hl-clue">As原因状语从句</span> + 主句 + <span class="hl-clue">插入语</span>(notably...)<br><b>核心</b>：As表"随着/由于"，插入语补充说明<br><b>译文</b>：随着科研经费减少，科学家们在多本书中抨击了"反科学"，最著名的是《高级迷信》。',tr:'随着科研经费减少，科学家们在多本书中抨击了"反科学"，最著名的是《高级迷信》。'},
+  {s:'There is no agreement whether methodology refers to the concepts peculiar to historical work in general or to the research techniques appropriate to the various branches of historical inquiry.',src:'考研英语翻译真题(改编)',ana:'<b>结构</b>：There is no agreement + <span class="hl-clue">whether...or...并列结构</span><br><b>核心</b>：whether引导同位语从句解释agreement，内部是peculiar to...in general or appropriate to...的并列<br><b>译文</b>：方法论是指一般历史研究特有的概念，还是指历史探究各分支适用的研究技术，对此没有一致意见。',tr:'方法论是指一般历史研究特有的概念，还是指历史探究各分支适用的研究技术，对此没有一致意见。'},
+  {s:'Scientists must communicate their message to the public in a compassionate, understandable way—in human terms, not in the language of molecular biology.',src:'考研英语阅读真题风格',ana:'<b>结构</b>：简单句 + <span class="hl-clue">破折号引出同位解释</span>(in human terms, not in...)<br><b>核心</b>：破折号后面是communicate方式的具体说明<br><b>译文</b>：科学家必须以一种富有同情心、通俗易懂的方式向公众传达信息——用通俗的语言，而不是分子生物学的术语。',tr:'科学家必须以一种富有同情心、通俗易懂的方式向公众传达信息——用通俗的语言，而不是分子生物学的术语。'},
+];
+
+function renderLongSent(){
+  let h=`<div class="section-title">🔬 长难句拆解</div><div class="section-sub">${LONG_SENTS.length} 个考研难度长难句。点击展开看语法拆解。</div>`;
+  LONG_SENTS.forEach((ls,i)=>{
+    h+=`<div class="ls-block" id="ls${i}" onclick="document.getElementById('ls${i}').classList.toggle('open')">
+      <div class="ls-sentence">${ls.s}</div>
+      <div class="ls-source">📌 ${ls.src} · 点击展开语法拆解</div>
+      <div class="ls-analysis">${ls.ana}</div>
+    </div>`;
   });
-  showFB(ok, q.options[q.answer]);
-  setTimeout(()=>{ curQIdx++; renderLesson(); }, 1100);
+  document.getElementById('mainWrap').innerHTML=h;
 }
 
-function subFill() {
-  const inp = document.getElementById('fillIn'); if (!inp||!inp.value.trim()) return;
-  const q = LESSONS.find(l=>l.id===curLessonId).questions[curQIdx];
-  const ua = inp.value.trim();
-  const corrects = Array.isArray(q.answer)?q.answer:[q.answer];
-  const ok = corrects.some(a=>ua.toLowerCase()===a.toLowerCase());
-  curAnswers.push({answer:ua,correct:ok});
-  inp.disabled = true; inp.classList.add(ok?'correct':'wrong');
-  const btn = document.querySelector('.btn-submit'); if(btn) btn.disabled = true;
-  if(!ok) inp.value = ua + ' → ' + corrects[0];
-  showFB(ok, corrects[0]);
-  setTimeout(()=>{ curQIdx++; renderLesson(); }, 1500);
+// ==================== CLOZE ====================
+const CLOZE_PASSAGES=[
+{title:'完形填空 1 · 科技与社会',text:[
+  ['In recent years, researchers have become increasingly interested in the relationship between technology use and mental health. '],
+  ['While some studies suggest that social media can have negative effects, others ',[{a:'A. indicate',b:'B. denies',c:'C. avoiding',d:'D. refuse',correct:0}]],[' that the impact depends largely on how these platforms are used. '],
+  ['The key factor ',[{a:'A. emerges',b:'B. emerging',c:'C. emerge',d:'D. to emerging',correct:1}]],[' from the research is not the amount of time spent online, but the nature of the engagement. '],
+  ['Passive consumption of content tends to be associated ',[{a:'A. with',b:'B. to',c:'C. for',d:'D. by',correct:0}]],[' lower well-being, '],
+  ['while active interaction and content creation are linked ',[{a:'A. at',b:'B. in',c:'C. to',d:'D. upon',correct:2}]],[' positive outcomes. '],
+  ['This finding has important implications for how we design digital environments and ',[{a:'A. educate',b:'B. educating',c:'C. have educated',d:'D. to educate',correct:0}]],[' young people about healthy technology habits.'],
+],qs:[{blk:1,a:0},{blk:3,a:1},{blk:4,a:0},{blk:6,a:2},{blk:7,a:0}]},
+{title:'完形填空 2 · 环境与经济',text:[
+  ['The transition to a low-carbon economy presents both opportunities and challenges for developing nations. '],
+  ['On the one hand, these countries have the chance to leapfrog ',[{a:'A. outdated',b:'B. updating',c:'C. outdating',d:'D. updates',correct:0}]],[' technologies and adopt cleaner alternatives from the start. '],
+  ['On the other hand, they often lack the financial resources and technical expertise ',[{a:'A. requiring',b:'B. required',c:'C. require',d:'D. to require',correct:1}]],[' to make this transition smoothly. '],
+  ['International cooperation is therefore not merely desirable ',[{a:'A. and',b:'B. so',c:'C. but',d:'D. or',correct:2}]],[' essential. '],
+  ['Without ',[{a:'A. substantial',b:'B. substantially',c:'C. substance',d:'D. substituting',correct:0}]],[' investment in green infrastructure,'],
+  ['the gap between developed and developing nations will continue to ',[{a:'A. widen',b:'B. widening',c:'C. wide',d:'D. widely',correct:0}]],[' rather than narrow.'],
+],qs:[{blk:1,a:0},{blk:2,a:1},{blk:3,a:2},{blk:4,a:0},{blk:5,a:0}]},
+{title:'完形填空 3 · 教育理念',text:[
+  ['There is a growing consensus among educators that traditional methods of assessment may not adequately capture the full range of student abilities. '],
+  ['Standardized tests, while efficient, tend to measure only a narrow band of skills, ',[{a:'A. leaving',b:'B. left',c:'C. leaves',d:'D. to leave',correct:0}]],[' out creativity, critical thinking, and collaboration. '],
+  ['A more holistic approach to evaluation would take ',[{a:'A. after',b:'B. up',c:'C. into',d:'D. over',correct:2}]],[' account not only academic achievement but also personal growth and social development. '],
+  ['Such an approach requires teachers to observe students over extended periods and ',[{a:'A. document',b:'B. documentation',c:'C. documented',d:'D. documenting',correct:0}]],[' their progress in multiple dimensions. '],
+  ['The challenge lies ',[{a:'A. on',b:'B. at',c:'C. with',d:'D. in',correct:3}]],[' implementing such a system on a large scale.'],
+],qs:[{blk:1,a:0},{blk:2,a:2},{blk:3,a:0},{blk:4,a:3}]},
+];
+
+function renderCloze(){
+  const cp=CLOZE_PASSAGES[czidx];if(!cp)return;
+  let h=`<div class="section-title">✂️ 完形填空</div><div class="section-sub">${CLOZE_PASSAGES.length} 篇模拟，考研经典题型。</div>`;
+  h+=`<div style="display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap">${CLOZE_PASSAGES.map((p,i)=>`<button class="btn ${i===czidx?'btn-primary':'btn-ghost'} btn-sm" onclick="czidx=${i};czans=[];renderCloze()">${p.title}</button>`).join('')}</div>`;
+
+  if(czans.length===cp.qs.length){
+    const correct=czans.filter(a=>a.correct).length;
+    const total=cp.qs.length;
+    h+=`<div class="result"><div class="card"><div class="ri">${correct===total?'🎉':'📖'}</div><div class="rs ${correct===total?'p':correct>=total*0.8?'g':correct>=total*0.6?'o':'l'}">${correct}/${total}</div><div class="rm">${correct===total?'全对！':'注意上下文逻辑线索'}</div><div class="ra"><button class="btn btn-ghost" onclick="czans=[];renderCloze()">🔄 重做</button>${czidx<CLOZE_PASSAGES.length-1?`<button class="btn btn-primary" onclick="czidx++;czans=[];renderCloze()">下一篇 →</button>`:''}</div></div></div>`;
+    document.getElementById('mainWrap').innerHTML=h;return;
+  }
+  h+=`<div class="card"><h3>${cp.title}</h3><p style="font-size:.95rem;line-height:2.3">`;
+  let blankCount=0;
+  const allBlanks=cp.text.filter(s=>s.length>1); // segments with blanks
+  const letters=['A','B','C','D'];
+  cp.text.forEach(seg=>{
+    const txt=seg[0]; // first element is always text
+    const hasBlank=seg.length>1; // has options array as second element
+    h+=txt;
+    if(hasBlank){
+      const qi=blankCount++;const answered=qi<czans.length;
+      h+=`<span class="cloze-blank${answered?(czans[qi].correct?' correct':' wrong'):''}">`;
+      h+=`<select onchange="czAns(${qi},this.value)" ${answered?'disabled':''} style="${answered?(czans[qi].correct?'border-color:var(--g);background:var(--gl)':'border-color:var(--r);background:var(--rl)'):''}">`;
+      h+=`<option value="">?</option>`;
+      const optObj=seg[1][0]; // [{a:'...',b:'...',c:'...',d:'...',correct:N}]
+      const keys=['a','b','c','d'];
+      for(let i=0;i<keys.length;i++){
+        if(optObj[keys[i]])h+=`<option value="${i}" ${answered&&czans[qi].answer===i?'selected':''}>${letters[i]}. ${optObj[keys[i]]}</option>`;
+      }
+      h+=`</select></span>`;
+    }
+  });
+  h+=`</p><div style="margin-top:14px;font-size:.8rem;color:var(--t3)">已填 ${czans.length}/${allBlanks.length} · 选完最后一空自动出分</div></div>`;
+  document.getElementById('mainWrap').innerHTML=h;
 }
 
-function showFB(ok, ans) {
-  const fb = document.getElementById('fb'); if(!fb) return;
-  fb.className = 'fb show '+(ok?'ok':'no');
-  fb.textContent = ok ? '✓ 正确！太棒了！' : '✗ 不对哦。正确答案：'+ans;
+function czAns(qi,val){
+  if(val==='')return;
+  const cp=CLOZE_PASSAGES[czidx];const blanks=cp.text.filter(s=>s.length>1);
+  const optObj=blanks[qi][1][0];const correctIdx=optObj.correct||0;
+  const answer=parseInt(val);
+  czans.push({answer,correct:answer===correctIdx});
+  renderCloze();
 }
 
-function retryLesson() { lessonPhase = 'quiz'; curQIdx = 0; curAnswers = []; renderLesson(); }
+// ==================== TRANSLATION ====================
+const TRANS_SENTS=[
+  {en:'The researchers found that children who regularly engaged in creative play demonstrated significantly better problem-solving skills than those who did not.',ref:'研究人员发现，经常进行创造性游戏的孩子比不这样做的孩子表现出明显更好的问题解决能力。',note:'定语从句嵌套 + 比较结构。who regularly engaged...修饰children；than those who did not是省略的比较状语从句。'},
+  {en:'It is precisely because the issues are so complex that we need to bring together experts from different fields to find solutions.',ref:'正是因为问题如此复杂，我们才需要汇集不同领域的专家来寻找解决方案。',note:'It is...that...强调句型，强调原因状语because...。'},
+  {en:'Not until the late 20th century did historians begin to seriously examine the role that ordinary people played in shaping major historical events.',ref:'直到20世纪末，历史学家才开始认真审视普通人在塑造重大历史事件中所扮演的角色。',note:'Not until + 倒装(did historians begin) + 定语从句(that ordinary people played)。'},
+  {en:'The assumption that economic growth automatically leads to greater happiness has been challenged by recent studies showing that beyond a certain income level, well-being does not significantly increase.',ref:'经济增长会自动带来更大幸福——这一假设已被最近的研究所质疑，这些研究表明超过一定收入水平后，幸福感不会显著增加。',note:'同位语从句(that...happiness) + 分词定语(showing...) + 宾语从句(that beyond...)。'},
+  {en:'What makes the problem particularly difficult to solve is that the various factors involved are deeply interconnected in ways that are not yet fully understood.',ref:'使这个问题特别难以解决的原因是，所涉及的各种因素以尚未被完全理解的方式深度关联。',note:'主语从句(What makes...) + 表语从句(that...) + 定语从句(that are not yet...)。'},
+  {en:'Governments around the world are now faced with the challenge of balancing economic development against environmental protection, a task that requires both vision and practical wisdom.',ref:'世界各国政府现在面临在经济发展和环境保护之间取得平衡的挑战，这项任务既需要远见也需要实践智慧。',note:'同位语(a task that...)概括前文整句话的内容，是考研翻译高频考点。'},
+  {en:'Were it not for the substantial investment in basic research over the past decades, many of the medical breakthroughs we now take for granted would not have been possible.',ref:'要不是过去几十年对基础研究的重大投入，我们现在视为理所当然的许多医学突破就不可能实现。',note:'虚拟语气倒装(Were it not for...=If it were not for...) + 定语从句(we now take for granted省略that)。'},
+  {en:'The rapid development of artificial intelligence has raised questions about the nature of work that go far beyond simple concerns about job displacement.',ref:'人工智能的快速发展引发了关于工作本质的问题，这些问题远远超出了对工作岗位被取代的简单担忧。',note:'定语从句(that go far beyond...)修饰questions，先行词与定语从句之间被about短语隔开，这是考研常见陷阱。'},
+];
 
-function renderWelcome() {
-  const done = completeCount();
-  let h = `<div class="welcome"><div class="wl-icon">📚</div><h2>从零开始学英语语法</h2>`;
-  h += `<p class="wl-desc">15 课体系化学习，A1 到 B1 逐步提升。每课 5 道互动练习，即时反馈，进度自动保存。</p>`;
-  h += `<div class="wl-path">`;
-  for (let i=0;i<15;i++) h += `<div class="dot${getLP(i+1).completed?' done':''}"></div>`;
-  h += `</div>`;
-  h += `<p style="color:var(--text-3);font-size:0.85rem;margin-bottom:16px">已完成 ${done}/15 课`+(avgScore()!==null?` · 平均分 ${avgScore()}/5`:'')+`</p>`;
-  h += `<button class="wl-start" onclick="openLesson(1)">🚀 开始学习</button></div>`;
-  document.getElementById('mainContent').innerHTML = h;
+function renderTrans(){
+  let h=`<div class="section-title">🌐 英译中练习</div><div class="section-sub">${TRANS_SENTS.length} 句考研难度英译中。自己翻译后对照参考译文。</div>`;
+  const ts=TRANS_SENTS[tridx];
+  h+=`<div style="margin-bottom:14px"><span style="font-size:.84rem;color:var(--t3)">${tridx+1}/${TRANS_SENTS.length}</span> <span style="float:right">${TRANS_SENTS.map((_,i)=>`<span style="display:inline-block;width:8px;height:8px;border-radius:50%;margin:0 2px;background:${i===tridx?'var(--brand)':'var(--border)'}"></span>`).join('')}</span></div>`;
+  h+=`<div class="trans-en">${ts.en}</div>`;
+  h+=`<textarea class="trans-input" id="transInput" placeholder="在此输入你的中文翻译..."></textarea>`;
+  h+=`<div style="margin-top:10px;display:flex;gap:8px"><button class="btn btn-primary btn-sm" onclick="document.getElementById('transRef').classList.toggle('show')">📖 对照参考译文</button></div>`;
+  h+=`<div class="trans-ref" id="transRef"><strong>参考译文：</strong>${ts.ref}<br><br><strong>语法解析：</strong>${ts.note}</div>`;
+  h+=`<div style="display:flex;gap:8px;margin-top:14px;justify-content:space-between"><button class="btn btn-ghost btn-sm" onclick="tridx=Math.max(0,tridx-1);renderTrans()" ${tridx===0?'disabled':''}>← 上一句</button><button class="btn btn-primary btn-sm" onclick="tridx=Math.min(TRANS_SENTS.length-1,tridx+1);renderTrans()" ${tridx===TRANS_SENTS.length-1?'disabled':''}>下一句 →</button></div>`;
+  document.getElementById('mainWrap').innerHTML=h;
+}
+
+// ==================== READING ====================
+const READINGS=[
+{title:'阅读 1 · AI与就业',passage:`<p>The debate over artificial intelligence and employment has evolved significantly over the past decade. Early predictions tended to polarize into two camps: those who foresaw mass unemployment as machines replaced human workers, and those who argued that technology always creates more jobs than it destroys.</p>
+<p>Recent research, however, suggests a more nuanced picture. A comprehensive study tracking 12 industries over a five-year period found that AI adoption led to job displacement in routine-heavy sectors such as manufacturing and data entry. But the same study also documented substantial job creation in fields requiring creativity, emotional intelligence, and complex problem-solving.</p>
+<p>What is particularly striking is the emergence of entirely new job categories that did not exist before the AI revolution. Prompt engineering, AI ethics consulting, and machine learning operations are just a few examples of roles that have grown from virtually nothing to significant employment sectors within a few years.</p>
+<p>The key policy challenge, therefore, is not whether to resist AI adoption, but how to manage the transition effectively. This includes investing in education and retraining programs, strengthening social safety nets, and ensuring that the benefits of AI-driven productivity gains are broadly shared.</p>`,
+qs:[{q:'According to the passage, early predictions about AI and jobs were:',op:['Mostly optimistic','Mostly pessimistic','Divided into two opposing views','Based on comprehensive research'],a:2},
+{q:'The study mentioned in paragraph 2 found that:',op:['AI had no effect on employment','AI only destroyed jobs','AI only created jobs','AI both displaced and created jobs'],a:3},
+{q:'The phrase "a more nuanced picture" (paragraph 2) most likely means:',op:['A clearer image','A more complex and detailed understanding','A more optimistic outlook','A photograph with more detail'],a:1},
+{q:'Which is NOT mentioned as a new job category?',op:['Prompt engineering','AI ethics consulting','Social media management','Machine learning operations'],a:2},
+{q:'The author\'s attitude toward AI adoption can best be described as:',op:['Strongly opposed','Cautiously optimistic','Completely neutral','Enthusiastically supportive without reservation'],a:1}]},
+{title:'阅读 2 · 气候变化政策',passage:`<p>The implementation of carbon pricing mechanisms has become one of the most widely discussed tools in climate policy. Carbon taxes and cap-and-trade systems both aim to internalize the environmental costs of greenhouse gas emissions, but they differ in their approach and political feasibility.</p>
+<p>Carbon taxes offer the advantage of simplicity: a fixed price per ton of carbon emitted provides predictability for businesses planning long-term investments. However, the word "tax" carries political baggage that has made implementation difficult in many jurisdictions. Cap-and-trade systems, by contrast, set a limit on total emissions and allow the market to determine the price of permits, which can lead to price volatility.</p>
+<p>A growing body of evidence from jurisdictions that have implemented either approach suggests that both can be effective when designed well. The European Union\'s Emissions Trading System, despite early challenges, has contributed to significant emissions reductions. Meanwhile, carbon taxes in countries like Sweden have demonstrated that it is possible to decouple economic growth from emissions growth.</p>
+<p>The critical factor appears to be not which mechanism is chosen, but whether the policy is stable, predictable, and accompanied by complementary measures such as investment in clean energy research and support for affected communities.</p>`,
+qs:[{q:'The main purpose of the passage is to:',op:['Argue that carbon taxes are better than cap-and-trade','Explain that both carbon pricing approaches can work','Criticize climate policy as ineffective','Propose a new climate policy tool'],a:1},
+{q:'One advantage of carbon taxes mentioned is:',op:['Political popularity','Price predictability','Market flexibility','Lower emissions'],a:1},
+{q:'The phrase "political baggage" (paragraph 2) refers to:',op:['The complexity of tax law','The negative associations of the word "tax"','The need for international cooperation','The cost of implementation'],a:1},
+{q:'According to the passage, what matters most for climate policy success?',op:['Choosing the right mechanism','Having stable and predictable policies','Getting international support','Reducing the cost of implementation'],a:1},
+{q:'The example of Sweden is used to illustrate that:',op:['Carbon taxes are ineffective','Economic growth can continue while emissions fall','Cap-and-trade is better than carbon taxes','Europe leads in climate policy'],a:1}]},
+];
+
+function renderReading(){
+  let h=`<div class="section-title">📰 阅读理解</div><div class="section-sub">${READINGS.length} 篇学术短文+选择题，仿真考研阅读题型。</div>`;
+  h+=`<div style="display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap">${READINGS.map((r,i)=>`<button class="btn ${i===rdidx?'btn-primary':'btn-ghost'} btn-sm" onclick="rdidx=${i};rdans=[];renderReading()">${r.title}</button>`).join('')}</div>`;
+  const rd=READINGS[rdidx];if(!rd)return;
+
+  if(rdans.length===rd.qs.length){
+    const correct=rdans.filter(a=>a.correct).length;
+    h+=`<div class="card"><div class="reading-passage">${rd.passage}</div><hr style="border:none;border-top:1px solid var(--border);margin:16px 0"><h3>答题结果</h3>`;
+    rd.qs.forEach((q,i)=>{h+=`<div style="padding:8px 0;border-bottom:1px solid var(--border)"><span style="color:${rdans[i].correct?'var(--g)':'var(--r)'};font-weight:700">${rdans[i].correct?'✓':'✗'}</span> ${q.q} <span style="color:var(--t3);font-size:.82rem">正确答案：${q.op[q.a]}</span></div>`});h+=`</div>`;
+    h+=`<div class="result"><div class="rs ${correct===rd.qs.length?'p':correct>=rd.qs.length*0.8?'g':correct>=rd.qs.length*0.6?'o':'l'}">${correct}/${rd.qs.length}</div><div class="ra"><button class="btn btn-ghost" onclick="rdans=[];renderReading()">🔄 重做</button>${rdidx<READINGS.length-1?`<button class="btn btn-primary" onclick="rdidx++;rdans=[];renderReading()">下一篇 →</button>`:''}</div></div>`;
+  } else {
+    h+=`<div class="card"><div class="reading-passage">${rd.passage}</div><hr style="border:none;border-top:1px solid var(--border);margin:16px 0"><h3>题目 (${rdans.length+1}/${rd.qs.length})</h3>`;
+    const q=rd.qs[rdans.length];
+    h+=`<div class="q-card"><div class="qtx">${q.q}</div><div class="opts">${q.op.map((o,i)=>`<button class="opt" onclick="readAns(${i},${q.a})"><span class="lt">${['A','B','C','D'][i]}</span>${o}</button>`).join('')}</div><div class="fb-toast" id="rdFb"></div></div>`;
+    h+=`<button class="btn btn-ghost btn-sm" style="margin-top:10px" onclick="rdans=[];renderReading()">重新开始</button></div>`;
+  }
+  document.getElementById('mainWrap').innerHTML=h;
+}
+function readAns(idx,correct){
+  const ok=idx===correct;rdans.push({correct:ok});
+  document.querySelectorAll('.opts .opt').forEach((b,i)=>{b.disabled=true;if(i===correct)b.classList.add('correct');if(i===idx&&!ok)b.classList.add('wrong')});
+  const fb=document.getElementById('rdFb');if(fb){fb.className='fb-toast show '+(ok?'ok':'no');fb.textContent=ok?'✓ 正确！':'✗ 正确答案：'+READINGS[rdidx].qs[rdans.length-1].op[correct]}
+  setTimeout(()=>renderReading(),1000)
 }
 
 // ===== EXPORT/IMPORT =====
-function exportProgress() {
-  navigator.clipboard.writeText(JSON.stringify(progress)).then(()=>{
-    showToast('✅ 已复制！粘贴到另一台设备导入','good');
-  }).catch(()=>showToast('复制失败，请重试','bad'));
-}
-function importProgress() {
-  const inp = prompt('请粘贴从另一台设备导出的进度数据：');
-  if (!inp) return;
-  try {
-    const d = JSON.parse(inp.trim());
-    if (typeof d!=='object'||d===null) throw new Error();
-    for (const [k,v] of Object.entries(d)) {
-      if (!/^\d+$/.test(k)) continue;
-      if (v&&typeof v.completed==='boolean'&&typeof v.bestScore==='number') {
-        const ex = progress[k];
-        if (ex) { ex.completed=ex.completed||v.completed; ex.bestScore=Math.max(ex.bestScore,v.bestScore||0); ex.score=Math.max(ex.score||0,v.score||0); }
-        else progress[k]=v;
-      }
-    }
-    setStored(progress); refreshSidebar();
-    if (curLessonId) renderLesson(); else renderWelcome();
-    showToast('🎉 进度导入成功！已合并两边最高分','good');
-  } catch { showToast('数据格式错误','bad'); }
-}
-function showToast(msg,type) {
-  const el=document.createElement('div'); el.className='toast '+type; el.textContent=msg;
-  document.body.appendChild(el); setTimeout(()=>el.remove(),2500);
-}
-
-// ===== MOBILE =====
-function switchMob(tab) {
-  document.querySelectorAll('.mob-nav-btn').forEach((b,i)=>b.classList.toggle('active',i===tab));
-  if (tab===0) { if(curLessonId) openLesson(curLessonId); else renderWelcome(); }
-  else renderMobProgress();
-}
-function renderMobProgress() {
-  let h = `<div style="padding:20px 14px 100px"><h2 style="font-size:1.2rem;font-weight:700;margin-bottom:14px">📊 学习进度</h2>`;
-  const groups = {A1:[],A2:[],B1:[]};
-  LESSONS.forEach((l,i)=>{const g=['A1','A2','B1'].includes(l.level)?l.level:'A2'; groups[g].push({l,i});});
-  for (const [g,items] of Object.entries(groups)) {
-    const labels={A1:'基础入门',A2:'能力进阶',B1:'中级提升'};
-    h+=`<div style="font-size:0.7rem;font-weight:700;color:var(--text-3);margin:14px 0 6px;text-transform:uppercase;letter-spacing:0.05em">${labels[g]} · ${g}</div>`;
-    items.forEach(({l,i})=>{
-      const p=getLP(l.id);
-      h+=`<div style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--surface);border-radius:var(--radius-xs);margin-bottom:4px;border:1px solid var(--border);cursor:pointer" onclick="openLesson(${l.id})">
-        <span style="font-weight:700;color:var(--text-3);font-size:0.78rem">#${i+1}</span>
-        <span style="flex:1;font-size:0.85rem;font-weight:550">${l.title}</span>
-        <span style="font-weight:700;font-size:0.8rem">${p.completed?p.bestScore+'/5':'—'}</span>
-      </div>`;
-    });
-  }
-  h+='</div>'; document.getElementById('mainContent').innerHTML = h;
+function exportProg(){navigator.clipboard.writeText(JSON.stringify(prog)).then(()=>toast('✅ 已复制进度数据','good')).catch(()=>toast('复制失败','bad'))}
+function importProg(){
+  const inp=prompt('粘贴进度数据：');if(!inp)return;
+  try{const d=JSON.parse(inp.trim());if(typeof d!=='object')throw new Error();
+    for(const[k,v]of Object.entries(d)){const ex=prog[k];if(ex&&v&&typeof v.bestScore==='number'){ex.completed=ex.completed||v.completed;ex.bestScore=Math.max(ex.bestScore,v.bestScore||0)}else if(!ex)prog[k]=v}
+    save();toast('🎉 进度导入成功','good');render()
+  }catch{toast('数据格式错误','bad')}
 }
 
 // ===== INIT =====
-refreshSidebar(); renderWelcome();
+renderGrammar();
 </script>
 </body>
 </html>
